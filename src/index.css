@@ -1,0 +1,23 @@
+@font-face {
+  font-family: myFont;
+  src: url(./04B_03.TTF);
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: myFont !important;
+  font-size: 16px !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+code {
+  font-family: myFont !important;
+  font-size: 16px !important;
+}
