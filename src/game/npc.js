@@ -28,11 +28,10 @@ export class Npc extends Interactor {
                     containsItem = true;
                     break;
                 }
-
-                if (!containsItem) {
-                    returnValue = false;
-                    break;
-                }
+            }
+            if (!containsItem) {
+                returnValue = false;
+                break;
             }
         }
 
@@ -40,7 +39,7 @@ export class Npc extends Interactor {
     }
 
     interact(level, player) {
-        if (playerHasItemRequirements(player)) {
+        if (this.playerHasItemRequirements(player)) {
             for (let i = 0; i < this.itemRequirements.itemNames.length; i++) {
                 for (let p = player.inventory.length - 1; p > -1; p--) {
                     if (this.itemRequirements.itemNames[i] === player.inventory[p].name) {
@@ -54,10 +53,13 @@ export class Npc extends Interactor {
                 player.inventory.push(this.itemRequirements.returnItem);
             }
 
-            if (this.itemRequirements.changeAnimation) {
-                this.idleAnimation = this.itemRequirements.changeAnimation;
+            if (this.itemRequirements.animationChange) {
+                this.idleAnimation.stop();
+                this.idleAnimation = this.itemRequirements.animationChange;
                 this.startIdleAnimation();
             }
+
+            return this.itemRequirements.dialogText;
         }
 
         return this.dialogText; 

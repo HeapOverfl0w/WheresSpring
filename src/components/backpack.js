@@ -22,7 +22,7 @@ export function Backpack(props) {
                 >
                     <List style={{maxHeight: '80vh', minWidth: '100%', overflow: 'auto'}}>
                         { props.inventory.map((value) => (
-                            <Tooltip title={value.desc}>
+                            <Tooltip title={value.desc} key={value.name}>
                                 <ListItemButton style={{padding: '10px'}}>
                                     <img src={`./rsc/${value.imageName}`} style={{width: '30px', height: '30px', marginRight: '5px'}} />
                                     <ListItemText primary={value.name} />

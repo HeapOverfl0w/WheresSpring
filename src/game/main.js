@@ -10,10 +10,12 @@ import * as Overworld from '../levels/overworld.json';
 import { Npc } from './npc';
 import { Teleport } from './teleport';
 import { Hazard } from './hazard';
+import { ItemRequirement } from './item-requirement';
 
 export class Main {
     constructor(ctx, data) {
         this.ctx = ctx;
+        this.ctx.font = '10px MS Gothic';
         this.data = data;
 
         this.renderer = new Renderer();
@@ -42,6 +44,9 @@ export class Main {
         this.overworldActors.push(new Item("Magical Emerald", 
         "A shining green jewel. It glows with some type of magical power.", 
         "item_emerald.png", this.level, 34, 55, this.data.animations["emerald"]));
+        this.overworldActors.push(new Item("Water Bucket", 
+        "A bucket filled with water. This should be able to put out the fire at the dock house.", 
+        "item_waterbucket.png", this.level, 10, 85, this.data.animations["waterbucket"]));
         this.overworldActors.push(new Item("Tater", 
         "Amy's pet potato bug Tater. This rascal always getting away.", 
         "tater.png", this.level, 58, 12, this.data.animations["tater"], this.data.animations["taterLeftMove"], this.data.animations["taterRightMove"], 
@@ -49,13 +54,28 @@ export class Main {
 
         //npcs
         this.overworldActors.push(new Npc("Sign Post",
-        "Welcome to Hollow End.", "dialog.png", [], this.level, 79, 64, this.data.animations["signpost"]));
+            "Welcome to Hollow End.", "dialog.png", undefined, this.level, 79, 64, this.data.animations["signpost"]));
+            this.overworldActors.push(new Npc("Oscar",
+            "Oscar: I swam up here in a hurry. Looks like Bogart is in trouble down by the docks. He might need some help!", "dialog_oscar.png", undefined, this.level, 64, 33, this.data.animations["oscar"]));
         this.overworldActors.push(new Npc("Lauren",
-        "Lauren: Whew, this hedge maze is brutal... even without the foliage. I'm going to rest before trying again. I've heard there's an ancient treasure at the end, but I don't think anyone has ever been able to find their way through.", 
-        "dialog_lauren.png", [], this.level, 55, 53, this.data.animations["lauren"]));
+            "Lauren: Whew, this hedge maze is brutal... even without the foliage. I'm going to rest before trying again. I've heard there's an ancient treasure at the end, but I don't think anyone has ever been able to find their way through.", 
+            "dialog_lauren.png", undefined, this.level, 55, 53, this.data.animations["lauren"]));
+        this.overworldActors.push(new Npc("Bogart",
+            "Bogart: Oh boy, oh boy... Bees invaded the dock house. I lit the fireplace and they came in to get warm. You're small. You think you could sneak by them and put out the fire? I dropped a bucket of water inside when I ran out.", 
+            "dialog_bogart.png", 
+            new ItemRequirement(["Empty Bucket"], "Bogart: Wow! Thank you for putting out the fire. They should be finding their way out soon. Here, have this item I found that warshed up on shore. Maybe you can find a use for it.", 
+                new Item("Staff Handle", "A golden cylinder of some sort. Looks like it could be used as a handle to something.", "item_staffhandle.png", this.level, 0, 0, this.data.animations["emerald"])), 
+            this.level, 29, 34, this.data.animations["bogart"]));
+        this.overworldActors.push(new Npc("Fireplace",
+            "", "", 
+            new ItemRequirement(["Water Bucket"], "", 
+                new Item("Empty Bucket", "It's an empty bucket. We should show this to Bogart to prove we put the fire out at the dock house.", "item_emptybucket.png", 
+                this.level, 0, 0, this.data.animations["emerald"]), this.data.animations['fireplacecold']), 
+            this.level, 22, 87, this.data.animations['fireplacewarm']));
 
         //teleports
-        this.overworldActors.push(new Teleport("Dock House", 10, 89, this.level, 30, 31, this.data.animations["dockhouse"]));
+        this.overworldActors.push(new Teleport("Dock House", 10, 89, this.level, 30, 30, this.data.animations["dockhouse"]));
+        this.overworldActors.push(new Teleport("Hollow End", 30, 32, this.level, 9, 89, this.data.animations["doorway"]));
 
         //hazards
         this.overworldActors.push(new Hazard("Bee", 10, 89, this.level, 13, 85, this.data.animations["beeRightMove"], 
@@ -118,7 +138,7 @@ export class Main {
             }
         }
         this.player.update(this.level);
-        this.renderer.draw(this.ctx, this.player, this.level, this.mouseX, this.mouseY, this.player.aStarPath, true, true, this.drawObjects);
+        this.renderer.draw(this.ctx, this.player, this.level, this.mouseX, this.mouseY, this.player.aStarPath, false, false, this.drawObjects);
         this.renderer.drawPlayerInteraction(this.ctx, this.player, this.overworldActors);
     }
 

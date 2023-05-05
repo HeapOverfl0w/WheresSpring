@@ -19,6 +19,7 @@ export class Item extends Interactor {
             player.inventory.push(this);
             level.tiles[this.tileX][this.tileY].actor = undefined;
             this.stationary = true;
+            this.aStarPath = [];
             this.x = 0;
             this.y = 0;
         }

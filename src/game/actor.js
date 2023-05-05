@@ -59,8 +59,8 @@ export class Actor {
     }
 
     stopAllAnimations() {
-        this.moveRightAnimation.stop();
-        this.moveLeftAnimation.stop();
+        this.moveRightAnimation?.stop();
+        this.moveLeftAnimation?.stop();
         this.idleAnimation.stop();
     }
 

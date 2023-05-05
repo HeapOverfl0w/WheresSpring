@@ -11,7 +11,7 @@ export class Interactor extends Actor {
     }
 
     isCloseTo(x, y) {
-        return Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2)) < 3;
+        return Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2)) < 3.5;
     }
 
     update(level) {
