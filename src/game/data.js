@@ -133,12 +133,20 @@ export class Data {
         this.animations['waterbucket'] = new Animation('waterbucket', this.textures['item_waterbucket'], 20, 20, 1, 0, false);
         this.animations['signpost'] = new Animation('signpost', this.textures['signpost'], 25, 54, 1, 0, false);
         this.animations['lauren'] = new Animation('lauren', this.textures['lauren'], 41, 50, 4, 400, true);
+        this.animations['amy'] = new Animation('amy', this.textures['amy'], 70, 85, 3, 500, true);
+        this.animations['thomas'] = new Animation('thomas', this.textures['thomas'], 35, 45, 4, 500, true);
+        this.animations['arnold'] = new Animation('arnold', this.textures['arnold'], 43, 62, 3, 500, true);
         this.animations['bogart'] = new Animation('bogart', this.textures['bogart'], 68, 58, 4, 500, true);
         this.animations['oscar'] = new Animation('oscar', this.textures['oscar'], 82, 50, 4, 500, true);
         this.animations['fireplacecold'] = new Animation('fireplacecold', this.textures['fireplacecold'], 63, 86, 1, 0, false);
         this.animations['fireplacewarm'] = new Animation('fireplacewarm', this.textures['fireplacewarm'], 63, 86, 2, 200, true);
         this.animations['dockhouse'] = new Animation('dockhouse', this.textures['dockhouse'], 135, 162, 4, 500, true);
         this.animations['doorway'] = new Animation('doorway', this.textures['doorway'], 63, 59, 1, 0, false);
+        this.animations['glassbottle'] = new Animation('glassbottle', this.textures['glassbottle'], 187, 129, 1, 0, false);
+        this.animations['spring'] = new Animation('spring', this.textures['spring'], 187, 129, 2, 1000, true);
+        this.animations['rudyLeftMove'] = new Animation('rudyLeftMove', this.textures['rudyLeftMove'], 49, 34, 2, 300, true);
+        this.animations['rudyRightMove'] = new Animation('rudyRightMove', this.textures['rudyRightMove'], 49, 34, 2, 300, true);
+        this.animations['blue'] = new Animation('blue', this.textures['blue'], 76, 65, 4, 700, true);
 
         Object.keys(this.animations).forEach(key => { this.animations[key].start(); });
     }

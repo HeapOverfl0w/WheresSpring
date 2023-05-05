@@ -42,7 +42,7 @@ export class Main {
         "A thick armored spiral gastropod shell. Doesn't look like anyone is home.", 
         "item_snailshell.png", this.level, 72, 74, this.data.animations["snailshell"]));
         this.overworldActors.push(new Item("Magical Emerald", 
-        "A shining green jewel. It glows with some type of magical power.", 
+        "A shining green jewel. It glows with some type of magical power. (1/4)", 
         "item_emerald.png", this.level, 34, 55, this.data.animations["emerald"]));
         this.overworldActors.push(new Item("Water Bucket", 
         "A bucket filled with water. This should be able to put out the fire at the dock house.", 
@@ -54,9 +54,14 @@ export class Main {
 
         //npcs
         this.overworldActors.push(new Npc("Sign Post",
-            "Welcome to Hollow End.", "dialog.png", undefined, this.level, 79, 64, this.data.animations["signpost"]));
-            this.overworldActors.push(new Npc("Oscar",
+            "Follow path to Hollow End. South to South Beach. North to Mount's Peak. West to Hedge Maze.", "dialog.png", undefined, this.level, 79, 64, this.data.animations["signpost"]));
+        this.overworldActors.push(new Npc("Oscar",
             "Oscar: I swam up here in a hurry. Looks like Bogart is in trouble down by the docks. He might need some help!", "dialog_oscar.png", undefined, this.level, 64, 33, this.data.animations["oscar"]));
+        this.overworldActors.push(new Npc("Blue",
+            "Blue: I love coming up here and singing while the sun sets. You're looking for spring? She hasn't come out of her hole yet?", "dialog_blue.png", undefined, this.level, 37, 9, this.data.animations["blue"]));
+        this.overworldActors.push(new Npc("Rudy",
+            "Rudy: No! I don't want spring to come. I love playing in the snow.", "dialog_rudy.png", undefined, this.level, 70, 58, this.data.animations["rudyLeftMove"], 
+            this.data.animations["rudyLeftMove"], this.data.animations["rudyRightMove"], [{x: 61, y: 58}, {x: 61, y: 64}, {x: 70, y: 64}, {x: 70, y: 58}]));
         this.overworldActors.push(new Npc("Lauren",
             "Lauren: Whew, this hedge maze is brutal... even without the foliage. I'm going to rest before trying again. I've heard there's an ancient treasure at the end, but I don't think anyone has ever been able to find their way through.", 
             "dialog_lauren.png", undefined, this.level, 55, 53, this.data.animations["lauren"]));
@@ -64,7 +69,7 @@ export class Main {
             "Bogart: Oh boy, oh boy... Bees invaded the dock house. I lit the fireplace and they came in to get warm. You're small. You think you could sneak by them and put out the fire? I dropped a bucket of water inside when I ran out.", 
             "dialog_bogart.png", 
             new ItemRequirement(["Empty Bucket"], "Bogart: Wow! Thank you for putting out the fire. They should be finding their way out soon. Here, have this item I found that warshed up on shore. Maybe you can find a use for it.", 
-                new Item("Staff Handle", "A golden cylinder of some sort. Looks like it could be used as a handle to something.", "item_staffhandle.png", this.level, 0, 0, this.data.animations["emerald"])), 
+                new Item("Staff Handle", "A golden cylinder of some sort. Looks like it could be used as a handle to something. (3/4)", "item_staffhandle.png", this.level, 0, 0, this.data.animations["emerald"])), 
             this.level, 29, 34, this.data.animations["bogart"]));
         this.overworldActors.push(new Npc("Fireplace",
             "", "", 
@@ -72,6 +77,29 @@ export class Main {
                 new Item("Empty Bucket", "It's an empty bucket. We should show this to Bogart to prove we put the fire out at the dock house.", "item_emptybucket.png", 
                 this.level, 0, 0, this.data.animations["emerald"]), this.data.animations['fireplacecold']), 
             this.level, 22, 87, this.data.animations['fireplacewarm']));
+        this.overworldActors.push(new Npc("Amy",
+            "Amy: Have you seen my pet Tater? I've been looking for him every where. If you see him please bring him back to me. He loves playing in the snow.", 
+            "dialog_amy.png", 
+            new ItemRequirement(["Tater"], "Amy: Tater! Yes! Thank you! I'm going to keep a close eye on him from now on. Here, I found this piece of wood that looks like it's a piece to something else. Maybe you can find a use for it.", 
+                new Item("Staff Base", "A stick with a golden end to it. Looks like the base of a tool or something. (4/4)", "item_staffbase.png", this.level, 0, 0, this.data.animations["emerald"])), 
+            this.level, 60, 50, this.data.animations["amy"]));
+        this.overworldActors.push(new Npc("Thomas",
+            "Thomas: Man... Arnold's got me working constantly. And on dumb stuff too - now he wants me to find a shell that could be used for armor. I think I saw some over by south beach, do you think you could find one so I could take a break?", 
+            "dialog_thomas.png", 
+            new ItemRequirement(["Snail Shell"], "Thomas: Whew, thanks bud. You did me a solid. Here's a staff head that Arnold said is super valuable, but without the other parts it's useless to me.", 
+                new Item("Staff Head", "A gnarled branch that looks like it could sit a magical gem into. (2/4)", "item_staffhead.png", this.level, 0, 0, this.data.animations["emerald"])), 
+            this.level, 62, 27, this.data.animations["thomas"]));
+        this.overworldActors.push(new Npc("Arnold",
+            "Arnold: Spring? I don't know - haven't seen 'er. I've been working all through winter while most around here are hibernating. Listen son - I can forge anything. If you need someone to craft you something you come to me.", 
+            "dialog_arnold.png", 
+            new ItemRequirement(["Staff Head", "Magical Emerald", "Staff Handle", "Staff Base"], "Arnold: Unbelievable, how'd you find all the lost parts to the Ever Verdant Staff? It has the power to move large objects, but had been lost to time. It would be my honor to reassemble it for you.", 
+                new Item("Ever Verdant Staff", "The ancient staff that was reassembled by Arnold. He claimed it has the ability to move large objects that are unnatural.", "item_staff.png", this.level, 0, 0, this.data.animations["emerald"])), 
+            this.level, 67, 27, this.data.animations["arnold"]));
+        this.overworldActors.push(new Npc("Glass Bottle",
+            "This glass bottle is clogging up some type of hole here?", 
+            "dialog_glassbottle.png", 
+            new ItemRequirement(["Letter for Spring", "Ever Verdant Staff"], "Spring: Good grief. I overslept! Normally someone would wake me up by this time so we can get spring started y'all! Oh, you also have a letter for me? Let's see what it says: THANK YOU FOR PLAYING WHERE'S SPRING? THE END.", undefined, this.data.animations["spring"], "dialog_spring.png"), 
+            this.level, 58, 70, this.data.animations["glassbottle"]));
 
         //teleports
         this.overworldActors.push(new Teleport("Dock House", 10, 89, this.level, 30, 30, this.data.animations["dockhouse"]));

@@ -59,6 +59,10 @@ export class Npc extends Interactor {
                 this.startIdleAnimation();
             }
 
+            if (this.itemRequirements.dialogChange) {
+                this.dialogImage = this.itemRequirements.dialogChange;
+            }
+
             return this.itemRequirements.dialogText;
         }
 
