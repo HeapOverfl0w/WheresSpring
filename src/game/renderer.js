@@ -17,9 +17,9 @@ export class Renderer {
         for (let a = 0; a < actors.length; a++) {
             const actionString = actors[a].isCloseTo ? actors[a].isCloseTo(player.x, player.y) : undefined;
             if (actionString) {
-                ctx.drawImage(this.eIcon, 5, ctx.canvas.height - 20);
+                ctx.drawImage(this.eIcon, ctx.canvas.width/2 - 20, ctx.canvas.height/2 - 10);
                 ctx.fillStyle = "white";
-                ctx.fillText(actionString, 25, ctx.canvas.height - 10);
+                ctx.fillText(actionString, ctx.canvas.width/2, ctx.canvas.height/2);
                 break;
             }
         }
@@ -38,7 +38,6 @@ export class Renderer {
         const tileWidth = ctx.canvas.width / camera.zoom;
         const tileHeight = ctx.canvas.height / camera.zoom;
 
-        let tileText = "";
         let extraCameraSpace = Math.ceil(camera.zoom / 10 * 2.6);
 
         let tilesToDraw = [];
@@ -74,7 +73,6 @@ export class Renderer {
                             if (isMouseInside) {
                                 this.mouseTileX = x;
                                 this.mouseTileY = y;
-                                tileText = `X: ${this.mouseTileX} , Y: ${this.mouseTileY}, Zoom: ${camera.zoom}, Object: ${level.tiles[x][y].levelObject.name}`;
                             }
                         }
                         
@@ -101,16 +99,11 @@ export class Renderer {
             if (isMouseInside) {
                 this.mouseTileX = tilesToDraw[t].x;
                 this.mouseTileY = tilesToDraw[t].y;
-                tileText = `X: ${this.mouseTileX} , Y: ${this.mouseTileY}, Zoom: ${camera.zoom}`;
             }
         }
         
         ctx.putImageData(this.screenBuffer, 0, 0);
         ctx.drawImage(this.backpackIcon, ctx.canvas.width - this.backpackIcon.width - 5, ctx.canvas.height - this.backpackIcon.height - 5)
-        ctx.fillStyle = "white";
-        ctx.fillText(tileText, 10, 10);
-        ctx.fillText(`${Math.floor(1000 / (Date.now() - this.lastDrawTime))}`, ctx.canvas.width - 20, 10);
-        this.lastDrawTime = Date.now();
     }
 
     drawTile(ctx, tile, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, isAStarPath, drawNonPassables, drawLightSources, ambientRgb) {

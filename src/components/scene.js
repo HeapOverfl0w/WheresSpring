@@ -58,7 +58,7 @@ export function Scene() {
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <canvas style={{minWidth: '100vw', maxHeight: '100vh'}}
                     id='scene' ref={canvasRef}
-                    width='640' height='400'
+                    width='560' height='350'
                     onWheel={(event) => {
                         main?.handleMouseWheel(event.deltaY);
                     }}

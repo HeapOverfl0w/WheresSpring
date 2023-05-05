@@ -176,7 +176,10 @@ export class Main {
             delta = -1;
         }
 
-        this.camera.zoom += delta;
+        const newZoom = this.camera.zoom + delta;
+        if (newZoom > 2 && newZoom < 11) {
+            this.camera.zoom = newZoom;
+        }
     }
 
     handleMouseUp() {
