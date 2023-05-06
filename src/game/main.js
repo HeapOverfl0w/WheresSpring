@@ -60,11 +60,14 @@ export class Main {
         this.overworldActors.push(new Npc("Blue",
             "Blue: I love coming up here and singing while the sun sets. You're looking for spring? She hasn't come out of her hole yet?", "dialog_blue.png", undefined, this.level, 37, 9, this.data.animations["blue"]));
         this.overworldActors.push(new Npc("Rudy",
-            "Rudy: No! I don't want spring to come. I love playing in the snow.", "dialog_rudy.png", undefined, this.level, 70, 58, this.data.animations["rudyLeftMove"], 
+            "Rudy: No! I don't want spring to come. I love playing in the snow. Momma won't let me play next to that big green thing just below here though. She says it's unnatural.", "dialog_rudy.png", undefined, this.level, 70, 58, this.data.animations["rudyLeftMove"], 
             this.data.animations["rudyLeftMove"], this.data.animations["rudyRightMove"], [{x: 61, y: 58}, {x: 61, y: 64}, {x: 70, y: 64}, {x: 70, y: 58}]));
         this.overworldActors.push(new Npc("Lauren",
             "Lauren: Whew, this hedge maze is brutal... even without the foliage. I'm going to rest before trying again. I've heard there's an ancient treasure at the end, but I don't think anyone has ever been able to find their way through.", 
             "dialog_lauren.png", undefined, this.level, 55, 53, this.data.animations["lauren"]));
+        this.overworldActors.push(new Npc("Dusty",
+            "Dusty: I don't know where Spring is at, but it better get here quick. The water is so cold.", 
+            "dialog_dusty.png", undefined, this.level, 69, 38, this.data.animations["dusty"]));
         this.overworldActors.push(new Npc("Bogart",
             "Bogart: Oh boy, oh boy... Bees invaded the dock house. I lit the fireplace and they came in to get warm. You're small. You think you could sneak by them and put out the fire? I dropped a bucket of water inside when I ran out.", 
             "dialog_bogart.png", 
@@ -72,10 +75,10 @@ export class Main {
                 new Item("Staff Handle", "A golden cylinder of some sort. Looks like it could be used as a handle to something. (3/4)", "item_staffhandle.png", this.level, 0, 0, this.data.animations["emerald"])), 
             this.level, 29, 34, this.data.animations["bogart"]));
         this.overworldActors.push(new Npc("Fireplace",
-            "", "", 
-            new ItemRequirement(["Water Bucket"], "", 
+            "This is the fireplace Bogart was asking us to dowse the flame on. I need to find the bucket - it's in the dock house somewhere.", "dialog_fireplace.png", 
+            new ItemRequirement(["Water Bucket"], "Throwing the water on the fire smothered it out. Bogart will be pleased and the bees will be gone soon for sure.", 
                 new Item("Empty Bucket", "It's an empty bucket. We should show this to Bogart to prove we put the fire out at the dock house.", "item_emptybucket.png", 
-                this.level, 0, 0, this.data.animations["emerald"]), this.data.animations['fireplacecold']), 
+                this.level, 0, 0, this.data.animations["emerald"]), this.data.animations['fireplacecold'],), 
             this.level, 22, 87, this.data.animations['fireplacewarm']));
         this.overworldActors.push(new Npc("Amy",
             "Amy: Have you seen my pet Tater? I've been looking for him every where. If you see him please bring him back to me. He loves playing in the snow.", 

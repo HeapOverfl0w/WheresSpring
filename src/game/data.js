@@ -79,12 +79,8 @@ export class Data {
         this.animations['bridge1'] = new Animation('bridge1', this.textures['bridge1'], 63, 38, 1, 0, false);
 
         //objects
-        this.animations['testobject'] = new Animation('testobject', this.textures['testobject'], 89, 100, 1, 0, false);
         this.animations['ironfence_nw'] = new Animation('ironfence_nw', this.textures['ironfence_nw'], 63, 68, 1, 0, false);
         this.animations['ironfence_ne'] = new Animation('ironfence_ne', this.textures['ironfence_ne'], 63, 68, 1, 0, false);
-        this.animations['palmtree1'] = new Animation('palmtree1', this.textures['palmtree1'], 67, 157, 1, 0, false);
-        this.animations['palmtree2'] = new Animation('palmtree2', this.textures['palmtree2'], 101, 143, 1, 0, false);
-        this.animations['bush1'] = new Animation('bush1', this.textures['bush1'], 75, 47, 1, 0, false);
         this.animations['rock1'] = new Animation('rock1', this.textures['rock1'], 49, 55, 1, 0, false);
         this.animations['rock2'] = new Animation('rock2', this.textures['rock2'], 48, 41, 1, 0, false);
         this.animations['fern1'] = new Animation('fern1', this.textures['fern1'], 16, 51, 1, 0, false);
@@ -92,8 +88,6 @@ export class Data {
         this.animations['fern3'] = new Animation('fern3', this.textures['fern3'], 36, 51, 1, 0, false);
         this.animations['streetlamp'] = new Animation('streetlamp', this.textures['streetlamp'], 16, 106, 1, 0, false);
         this.animations['wave1'] = new Animation('wave1', this.textures['wave1'], 166, 19, 4, 2000, true);
-        this.animations['kamehouse'] = new Animation('kamehouse', this.textures['kamehouse'], 192, 202, 1, 0, false);
-        this.animations['pizzaplace'] = new Animation('pizzaplace', this.textures['pizzaplace'], 208, 197, 1, 0, false);
         this.animations['leaf1'] = new Animation('leaf1', this.textures['leaf1'], 56, 44, 1, 0, false);
         this.animations['leaf2'] = new Animation('leaf2', this.textures['leaf2'], 43, 31, 1, 0, false);
         this.animations['torch'] = new Animation('torch', this.textures['torch'], 10, 45, 2, 200, true);
@@ -147,6 +141,7 @@ export class Data {
         this.animations['rudyLeftMove'] = new Animation('rudyLeftMove', this.textures['rudyLeftMove'], 49, 34, 2, 300, true);
         this.animations['rudyRightMove'] = new Animation('rudyRightMove', this.textures['rudyRightMove'], 49, 34, 2, 300, true);
         this.animations['blue'] = new Animation('blue', this.textures['blue'], 76, 65, 4, 700, true);
+        this.animations['dusty'] = new Animation('dusty', this.textures['dusty'], 94, 56, 2, 1000, true);
 
         Object.keys(this.animations).forEach(key => { this.animations[key].start(); });
     }
@@ -197,12 +192,8 @@ export class Data {
 
     loadLevelObjects() {
         this.levelObjects = {};
-        this.levelObjects['testobject'] = new LevelObject("TestObject", this.animations['testobject']);
         this.levelObjects['ironfence_nw'] = new LevelObject("IronFence_NW", this.animations['ironfence_nw']);
         this.levelObjects['ironfence_ne'] = new LevelObject("IronFence_NE", this.animations['ironfence_ne']);
-        this.levelObjects['palmtree1'] = new LevelObject("PalmTree1", this.animations['palmtree1']);
-        this.levelObjects['palmtree2'] = new LevelObject("PalmTree2", this.animations['palmtree2']);
-        this.levelObjects['bush1'] = new LevelObject("Bush1", this.animations['bush1']);
         this.levelObjects['rock1'] = new LevelObject("Rock1", this.animations['rock1']);
         this.levelObjects['rock2'] = new LevelObject("Rock2", this.animations['rock2']);
         this.levelObjects['wave1'] = new LevelObject("Wave1", this.animations['wave1']);
@@ -210,8 +201,6 @@ export class Data {
         this.levelObjects['fern2'] = new LevelObject("Fern2", this.animations['fern2']);
         this.levelObjects['fern3'] = new LevelObject("Fern3", this.animations['fern3']);
         this.levelObjects['streetlamp'] = new LevelObject("StreetLamp", this.animations['streetlamp']);
-        this.levelObjects['kamehouse'] = new LevelObject("KameHouse", this.animations['kamehouse']);
-        this.levelObjects['pizzaplace'] = new LevelObject("PizzaPlace", this.animations['pizzaplace']);
         this.levelObjects['leaf1'] = new LevelObject("Leaf1", this.animations['leaf1']);
         this.levelObjects['leaf2'] = new LevelObject("Leaf2", this.animations['leaf2']);
         this.levelObjects['leaf3'] = new LevelObject("Leaf3", this.animations['leaf3']);
