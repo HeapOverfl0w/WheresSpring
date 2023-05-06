@@ -3,6 +3,7 @@ import { Data } from '../game/data';
 import { Main } from '../game/main';
 import { Dialog } from "./dialog";
 import { Backpack } from "./backpack";
+import { GLOBAL_AUDIO_HANDLER } from "../game/audio-handler";
 
 export function Scene() {
     const canvasRef = useRef();
@@ -37,6 +38,11 @@ export function Scene() {
                 }
             }}
             onKeyUp={(event) => {
+                if (event.key === 'q') {
+                    GLOBAL_AUDIO_HANDLER.toggleMute();
+                    return;
+                }
+
                 if (!dialogText) {
                     const returnValue = main?.handleKeyUp(event.key);
                     if (returnValue) {
@@ -45,11 +51,13 @@ export function Scene() {
                     }
                 } else {
                     if (event.key === 'e') {
+                        GLOBAL_AUDIO_HANDLER.playClick();
                         setDialogText("");
                     }
                 }
                 //open/close backpack
                 if (event.key === "b" && !dialogText && main) {
+                    GLOBAL_AUDIO_HANDLER.playBackpack();
                     setBackpackOpen(!backpackOpen);
                     setInventory(main.player.inventory);
                 }

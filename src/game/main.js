@@ -11,6 +11,7 @@ import { Npc } from './npc';
 import { Teleport } from './teleport';
 import { Hazard } from './hazard';
 import { ItemRequirement } from './item-requirement';
+import { GLOBAL_AUDIO_HANDLER } from './audio-handler';
 
 export class Main {
     constructor(ctx, data) {
@@ -25,6 +26,8 @@ export class Main {
 
         this.mouseX = 0;
         this.mouseY = 0;
+
+        this.activeCutscene = this.data.introCutscene;
 
         this.loadLevel(Overworld);
         this.createOverworldActors();
@@ -65,9 +68,12 @@ export class Main {
         this.overworldActors.push(new Npc("Lauren",
             "Lauren: Whew, this hedge maze is brutal... even without the foliage. I'm going to rest before trying again. I've heard there's an ancient treasure at the end, but I don't think anyone has ever been able to find their way through.", 
             "dialog_lauren.png", undefined, this.level, 55, 53, this.data.animations["lauren"]));
-        this.overworldActors.push(new Npc("Dusty",
-            "Dusty: I don't know where Spring is at, but it better get here quick. The water is so cold.", 
+        this.overworldActors.push(new Npc("Audrey",
+            "Audrey: I don't know where Spring is at, but it better get here quick. The water is so cold.", 
             "dialog_dusty.png", undefined, this.level, 69, 38, this.data.animations["dusty"]));
+        this.overworldActors.push(new Npc("Collins",
+            "Collins: I haven't seen spring, but gosh darnit I wish I have. We need to start growing some crops or we ain't gunna have no food for the summer.", 
+            "dialog_collins.png", undefined, this.level, 78, 43, this.data.animations["collins"]));
         this.overworldActors.push(new Npc("Bogart",
             "Bogart: Oh boy, oh boy... Bees invaded the dock house. I lit the fireplace and they came in to get warm. You're small. You think you could sneak by them and put out the fire? I dropped a bucket of water inside when I ran out.", 
             "dialog_bogart.png", 
@@ -105,8 +111,8 @@ export class Main {
             this.level, 58, 70, this.data.animations["glassbottle"]));
 
         //teleports
-        this.overworldActors.push(new Teleport("Dock House", 10, 89, this.level, 30, 30, this.data.animations["dockhouse"]));
-        this.overworldActors.push(new Teleport("Hollow End", 30, 32, this.level, 9, 89, this.data.animations["doorway"]));
+        this.overworldActors.push(new Teleport("Dock House", 10, 89, "bee", this.level, 30, 30, this.data.animations["dockhouse"]));
+        this.overworldActors.push(new Teleport("Hollow End", 30, 32, "ambience", this.level, 9, 89, this.data.animations["doorway"]));
 
         //hazards
         this.overworldActors.push(new Hazard("Bee", 10, 89, this.level, 13, 85, this.data.animations["beeRightMove"], 
@@ -163,6 +169,13 @@ export class Main {
     }
     
     update() {
+        if (this.activeCutscene) {
+            this.activeCutscene.update();
+            this.activeCutscene.draw(this.ctx);
+
+            return;
+        }
+
         for (let a = 0; a < this.overworldActors.length; a++) {
             if (this.overworldActors[a].update) {
                 this.overworldActors[a].update(this.level);
@@ -171,6 +184,8 @@ export class Main {
         this.player.update(this.level);
         this.renderer.draw(this.ctx, this.player, this.level, this.mouseX, this.mouseY, this.player.aStarPath, false, false, this.drawObjects);
         this.renderer.drawPlayerInteraction(this.ctx, this.player, this.overworldActors);
+
+        GLOBAL_AUDIO_HANDLER.update();
     }
 
     handleMouseWheel(deltaY) {
@@ -197,9 +212,29 @@ export class Main {
     }
 
     handleKeyUp(key) {
+        if (this.activeCutscene) {
+            if (this.activeCutscene.skippable || this.activeCutscene.isOver()) {
+                
+                if (this.activeCutscene === this.data.introCutscene) {
+                    GLOBAL_AUDIO_HANDLER.playAndLoopMusic();
+                    GLOBAL_AUDIO_HANDLER.playAmbience("ambience");
+
+                    this.activeCutscene = undefined;
+
+                    return {
+                        dialogText: "Alright, last letter to deliver today. Whew, good. Maybe I can make it home before it gets dark.",
+                        dialogImage: "dialog_player.png"
+                    }
+                }
+
+                this.activeCutscene = undefined;
+            }
+            return;
+        }
         if (key === 'e') {
             for (let a = 0; a < this.overworldActors.length; a++) {
                 if (this.overworldActors[a].isCloseTo(this.player.x, this.player.y)) {
+                    GLOBAL_AUDIO_HANDLER.playClick();
                     const dialogText = this.overworldActors[a].interact(this.level, this.player);
 
                     if (dialogText) {

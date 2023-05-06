@@ -1,11 +1,17 @@
-import { Interactor } from "./interactor";
+import { Actor } from "./actor";
+import { GLOBAL_AUDIO_HANDLER } from "./audio-handler";
 
-export class Hazard extends Interactor {
+export class Hazard extends Actor {
     constructor(name, teleportX, teleportY, level, x, y, idleAnimation, moveLeftAnimation = undefined, moveRightAnimation = undefined, movementPoints = undefined) {
         super(level, x, y, idleAnimation, moveLeftAnimation, moveRightAnimation, movementPoints);
         this.name = name;
         this.teleportX = teleportX;
         this.teleportY = teleportY;
+
+        if (movementPoints) {
+            this.movementPoints = movementPoints;
+            this.currentMovementPoint = 0;
+        }
     }
 
     teleportActor(level, actor) {
@@ -58,6 +64,7 @@ export class Hazard extends Interactor {
 
                 //check for collisions when moving forward
                 if (level.tiles[this.tileX][this.tileY].actor) {
+                    GLOBAL_AUDIO_HANDLER.playOw();
                     this.teleportActor(level, level.tiles[this.tileX][this.tileY].actor);
                 }
 

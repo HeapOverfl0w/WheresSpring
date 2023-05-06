@@ -100,7 +100,7 @@ export class Actor {
 
                     if (this.aStarPath.length > 0) {
                         this.aStarTo(level, this.aStarPath[this.aStarPath.length - 1].x, this.aStarPath[this.aStarPath.length - 1].y);
-                    }                    
+                    }                  
                 }
                 
                 if (this.aStarPath.length === 0) {

@@ -1,11 +1,13 @@
+import { GLOBAL_AUDIO_HANDLER } from "./audio-handler";
 import { Interactor } from "./interactor";
 
 export class Teleport extends Interactor {
-    constructor(name, teleportX, teleportY, level, x, y, idleAnimation, moveLeftAnimation = undefined, moveRightAnimation = undefined, movementPoints = undefined) {
+    constructor(name, teleportX, teleportY, ambienceSoundName, level, x, y, idleAnimation, moveLeftAnimation = undefined, moveRightAnimation = undefined, movementPoints = undefined) {
         super(level, x, y, idleAnimation, moveLeftAnimation, moveRightAnimation, movementPoints);
         this.name = name;
         this.teleportX = teleportX;
         this.teleportY = teleportY;
+        this.ambienceSoundName = ambienceSoundName;
     }
 
     isCloseTo(x, y) {
@@ -26,5 +28,7 @@ export class Teleport extends Interactor {
         player.camera.x = player.x + 0.5;
         player.camera.y = player.y + 0.5;
         player.startIdleAnimation();
+
+        GLOBAL_AUDIO_HANDLER.playAmbience(this.ambienceSoundName);
     }
 }

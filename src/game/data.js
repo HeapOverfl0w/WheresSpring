@@ -1,4 +1,5 @@
 import { Animation } from './animation';
+import { Cutscene } from './cutscene';
 import { LevelObject } from './level-object';
 import { Tile } from './tile';
 
@@ -12,6 +13,7 @@ export class Data {
         this.loadAnimations();
         this.loadTiles();
         this.loadLevelObjects();
+        this.loadCutscenes();
     }
 
     loadTextures() {
@@ -142,6 +144,10 @@ export class Data {
         this.animations['rudyRightMove'] = new Animation('rudyRightMove', this.textures['rudyRightMove'], 49, 34, 2, 300, true);
         this.animations['blue'] = new Animation('blue', this.textures['blue'], 76, 65, 4, 700, true);
         this.animations['dusty'] = new Animation('dusty', this.textures['dusty'], 94, 56, 2, 1000, true);
+        this.animations['collins'] = new Animation('collins', this.textures['collins'], 33, 48, 3, 500, true);
+
+        //cutscenes
+        this.animations['introcutscene'] = new Animation('introcutscene', this.textures['introcutscene'], 560, 350, 6, 800, false);
 
         Object.keys(this.animations).forEach(key => { this.animations[key].start(); });
     }
@@ -225,5 +231,9 @@ export class Data {
         this.levelObjects['cabinwallcorner'] = new LevelObject("CabinWallCorner", this.animations['cabinwallcorner']);
         this.levelObjects['boothouse'] = new LevelObject("BootHouse", this.animations['boothouse']);
         this.levelObjects['snowman'] = new LevelObject("Snowman", this.animations['snowman']);
+    }
+
+    loadCutscenes() {
+        this.introCutscene = new Cutscene([this.animations['introcutscene']], false);
     }
 }

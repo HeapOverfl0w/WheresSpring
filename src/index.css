@@ -15,6 +15,7 @@ html, body {
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  cursor: url("./cursor.png"), auto !important;
 }
 
 code {
