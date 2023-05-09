@@ -51,6 +51,9 @@ export function Scene() {
                     }
                 } else {
                     if (event.key === 'e') {
+                        if (dialogText.startsWith("Spring")) {
+                            main.activeCutscene = data.springCutscene;
+                        }
                         GLOBAL_AUDIO_HANDLER.playClick();
                         setDialogText("");
                     }

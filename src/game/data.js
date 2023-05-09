@@ -148,6 +148,7 @@ export class Data {
 
         //cutscenes
         this.animations['introcutscene'] = new Animation('introcutscene', this.textures['introcutscene'], 560, 350, 6, 800, false);
+        this.animations['springcutscene'] = new Animation('springcutscene', this.textures['springcutscene'], 560, 350, 8, 800, false);
 
         Object.keys(this.animations).forEach(key => { this.animations[key].start(); });
     }
@@ -235,5 +236,6 @@ export class Data {
 
     loadCutscenes() {
         this.introCutscene = new Cutscene([this.animations['introcutscene']], false);
+        this.springCutscene = new Cutscene([this.animations['springcutscene']], false);
     }
 }

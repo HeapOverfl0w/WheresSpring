@@ -63,6 +63,12 @@ export class Npc extends Interactor {
                 this.dialogImage = this.itemRequirements.dialogChange;
             }
 
+            if (this.itemRequirements.nameChange) {
+                this.name = this.itemRequirements.nameChange;
+            }
+
+            this.dialogText = this.itemRequirements.dialogText;
+
             return this.itemRequirements.dialogText;
         }
 

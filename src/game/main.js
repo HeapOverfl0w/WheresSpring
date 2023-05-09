@@ -107,7 +107,7 @@ export class Main {
         this.overworldActors.push(new Npc("Glass Bottle",
             "This glass bottle is clogging up some type of hole here?", 
             "dialog_glassbottle.png", 
-            new ItemRequirement(["Letter for Spring", "Ever Verdant Staff"], "Spring: Good grief. I overslept! Normally someone would wake me up by this time so we can get spring started y'all! Oh, you also have a letter for me? Let's see what it says: THANK YOU FOR PLAYING WHERE'S SPRING? THE END.", undefined, this.data.animations["spring"], "dialog_spring.png"), 
+            new ItemRequirement(["Letter for Spring", "Ever Verdant Staff"], "Spring: Good grief. I overslept! Normally someone would wake me up by this time so we can get spring started y'all! Oh, you also have a letter for me? Let's see what it says: THANK YOU FOR PLAYING WHERE'S SPRING? THE END.", undefined, this.data.animations["spring"], "dialog_spring.png", "Spring"), 
             this.level, 58, 70, this.data.animations["glassbottle"]));
 
         //teleports
@@ -182,7 +182,7 @@ export class Main {
             }
         }
         this.player.update(this.level);
-        this.renderer.draw(this.ctx, this.player, this.level, this.mouseX, this.mouseY, this.player.aStarPath, false, false, this.drawObjects);
+        this.renderer.draw(this.ctx, this.player, this.level, this.mouseX, this.mouseY, [], false, false, this.drawObjects);
         this.renderer.drawPlayerInteraction(this.ctx, this.player, this.overworldActors);
 
         GLOBAL_AUDIO_HANDLER.update();

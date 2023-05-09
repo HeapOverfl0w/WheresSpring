@@ -28,6 +28,7 @@ export class Teleport extends Interactor {
         player.camera.x = player.x + 0.5;
         player.camera.y = player.y + 0.5;
         player.startIdleAnimation();
+        player.aStarPath = [];
 
         GLOBAL_AUDIO_HANDLER.playAmbience(this.ambienceSoundName);
     }
