@@ -2,153 +2,155 @@ import { Animation } from './animation';
 import { Cutscene } from './cutscene';
 import { LevelObject } from './level-object';
 import { Tile } from './tile';
+import TexturesList from '../extras/textures-list.json';
 
 export class Data {
-    constructor() {
-
+    constructor(webglLoader, onLoadingProgress, onLoadComplete) {
+        webglLoader.baseUrl = "rsc";
+        this.webglLoader = webglLoader;
+        this.webglLoader.onProgress = onLoadingProgress;
+        this.onLoadComplete = onLoadComplete;
     }
 
     load() {
         this.loadTextures();
+    }
+
+    loadTextures() {
+        this.webglLoader.resources = {};
+
+        for (let i = 0; i < TexturesList.length; i++) {
+            let imgName = TexturesList[i].split('.')[0];
+            this.webglLoader.add(imgName, TexturesList[i]);
+        }
+
+        this.webglLoader.load(this.textureLoadComplete);
+    }
+
+    textureLoadComplete() {
         this.loadAnimations();
         this.loadTiles();
         this.loadLevelObjects();
         this.loadCutscenes();
-    }
 
-    loadTextures() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d', {willReadFrequently: true});
-
-        const textures = document.getElementById('textures');
-
-        this.textures = {};
-
-        for (let i = 0; i < textures.childElementCount; i++) {
-            let img = textures.children[i];
-            let imgName = img.src.split('\\').pop().split('/').pop().split('.')[0];
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            let imgData = ctx.getImageData(0, 0, img.width, img.height);
-            this.textures[imgName] = imgData;
-        }
+        //send callback we done
+        this.onLoadComplete();
     }
 
     loadAnimations() {
         this.animations = {};
 
         //tiles
-        this.animations['empty'] = new Animation('empty', this.textures['empty'], 63, 38, 1, 0, false);
-        this.animations['grass'] = new Animation('grass', this.textures['grass'], 63, 38, 1, 0, false);
-        this.animations['grassflowers'] = new Animation('grassflowers', this.textures['grassflowers'], 63, 38, 2, 1000, true);
-        this.animations['stone'] = new Animation('stone', this.textures['stone'], 63, 38, 1, 0, false);
-        this.animations['stone1'] = new Animation('stone1', this.textures['stone1'], 63, 38, 1, 0, false);
-        this.animations['rug1'] = new Animation('rug1', this.textures['rug1'], 63, 38, 1, 0, false);
-        this.animations['rug2'] = new Animation('rug2', this.textures['rug2'], 63, 38, 1, 0, false);
-        this.animations['asphalt'] = new Animation('asphalt', this.textures['asphalt'], 63, 38, 1, 0, false);
-        this.animations['sidewalk1'] = new Animation('sidewalk1', this.textures['sidewalk1'], 63, 38, 1, 0, false);
-        this.animations['sidewalk2'] = new Animation('sidewalk2', this.textures['sidewalk2'], 63, 38, 1, 0, false);
-        this.animations['sidewalk3'] = new Animation('sidewalk3', this.textures['sidewalk3'], 63, 38, 1, 0, false);
-        this.animations['water1'] = new Animation('water1', this.textures['water1'], 63, 38, 1, 0, false);
-        this.animations['waterbubble'] = new Animation('waterbubble', this.textures['waterbubble'], 63, 38, 4, 1000, true);
-        this.animations['mud1'] = new Animation('mud1', this.textures['mud1'], 63, 38, 1, 0, false);
-        this.animations['mud2'] = new Animation('mud2', this.textures['mud2'], 63, 38, 1, 0, false);
-        this.animations['sand1'] = new Animation('sand1', this.textures['sand1'], 63, 38, 1, 0, false);
-        this.animations['sand2'] = new Animation('sand2', this.textures['sand2'], 63, 38, 1, 0, false);
-        this.animations['sand3'] = new Animation('sand3', this.textures['sand3'], 63, 38, 1, 0, false);
-        this.animations['sand4'] = new Animation('sand4', this.textures['sand4'], 63, 38, 1, 0, false);
-        this.animations['sandgrassedge_ne'] = new Animation('sandgrassedge_ne', this.textures['sandgrassedge_ne'], 63, 38, 1, 0, false);
-        this.animations['sandgrassedge_nw'] = new Animation('sandgrassedge_nw', this.textures['sandgrassedge_nw'], 63, 38, 1, 0, false);
-        this.animations['sandgrassedge_se'] = new Animation('sandgrassedge_se', this.textures['sandgrassedge_se'], 63, 38, 1, 0, false);
-        this.animations['sandgrassedge_sw'] = new Animation('sandgrassedge_sw', this.textures['sandgrassedge_sw'], 63, 38, 1, 0, false);
-        this.animations['sandwateredge_ne'] = new Animation('sandwateredge_ne', this.textures['sandwateredge_ne'], 63, 38, 2, 2000, true);
-        this.animations['sandwateredge_nw'] = new Animation('sandwateredge_nw', this.textures['sandwateredge_nw'], 63, 38, 2, 2000, true);
-        this.animations['sandwateredge_se'] = new Animation('sandwateredge_se', this.textures['sandwateredge_se'], 63, 38, 2, 2000, true);
-        this.animations['sandwateredge_sw'] = new Animation('sandwateredge_sw', this.textures['sandwateredge_sw'], 63, 38, 2, 2000, true);
-        this.animations['sandwatercorner_n'] = new Animation('sandwatercorner_n', this.textures['sandwatercorner_n'], 63, 38, 2, 2000, true);
-        this.animations['sandwatercorner_s'] = new Animation('sandwatercorner_s', this.textures['sandwatercorner_s'], 63, 38, 2, 2000, true);
-        this.animations['sandwatercorner_e'] = new Animation('sandwatercorner_e', this.textures['sandwatercorner_e'], 63, 38, 2, 2000, true);
-        this.animations['sandwatercorner_w'] = new Animation('sandwatercorner_w', this.textures['sandwatercorner_w'], 63, 38, 2, 2000, true);
-        this.animations['sandwaterwedge_e'] = new Animation('sandwaterwedge_e', this.textures['sandwaterwedge_e'], 63, 38, 2, 2000, true);
-        this.animations['sandwaterwedge_w'] = new Animation('sandwaterwedge_w', this.textures['sandwaterwedge_w'], 63, 38, 2, 2000, true);
-        this.animations['sandwaterwedge_n'] = new Animation('sandwaterwedge_n', this.textures['sandwaterwedge_n'], 63, 38, 2, 2000, true);
-        this.animations['sandgrasscorner_w'] = new Animation('sandgrasscorner_w', this.textures['sandgrasscorner_w'], 63, 38, 1, 0, false);
-        this.animations['sandgrasscorner_e'] = new Animation('sandgrasscorner_e', this.textures['sandgrasscorner_e'], 63, 38, 1, 0, false);
-        this.animations['sandgrasscorner_n'] = new Animation('sandgrasscorner_n', this.textures['sandgrasscorner_n'], 63, 38, 1, 0, false);
-        this.animations['sandgrasscorner_s'] = new Animation('sandgrasscorner_s', this.textures['sandgrasscorner_s'], 63, 38, 1, 0, false);
-        this.animations['snow'] = new Animation('snow', this.textures['snow'], 63, 38, 1, 0, false);
-        this.animations['bridge1'] = new Animation('bridge1', this.textures['bridge1'], 63, 38, 1, 0, false);
+        this.animations['empty'] = new Animation('empty', this.webglLoader.resources['empty'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['grass'] = new Animation('grass', this.webglLoader.resources['grass'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['grassflowers'] = new Animation('grassflowers', this.webglLoader.resources['grassflowers'].texture.castToBaseTexture(), 63, 38, 2, 1000, true);
+        this.animations['stone'] = new Animation('stone', this.webglLoader.resources['stone'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['stone1'] = new Animation('stone1', this.webglLoader.resources['stone1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['rug1'] = new Animation('rug1', this.webglLoader.resources['rug1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['rug2'] = new Animation('rug2', this.webglLoader.resources['rug2'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['asphalt'] = new Animation('asphalt', this.webglLoader.resources['asphalt'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sidewalk1'] = new Animation('sidewalk1', this.webglLoader.resources['sidewalk1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sidewalk2'] = new Animation('sidewalk2', this.webglLoader.resources['sidewalk2'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sidewalk3'] = new Animation('sidewalk3', this.webglLoader.resources['sidewalk3'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['water1'] = new Animation('water1', this.webglLoader.resources['water1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['waterbubble'] = new Animation('waterbubble', this.webglLoader.resources['waterbubble'].texture.castToBaseTexture(), 63, 38, 4, 1000, true);
+        this.animations['mud1'] = new Animation('mud1', this.webglLoader.resources['mud1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['mud2'] = new Animation('mud2', this.webglLoader.resources['mud2'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sand1'] = new Animation('sand1', this.webglLoader.resources['sand1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sand2'] = new Animation('sand2', this.webglLoader.resources['sand2'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sand3'] = new Animation('sand3', this.webglLoader.resources['sand3'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sand4'] = new Animation('sand4', this.webglLoader.resources['sand4'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrassedge_ne'] = new Animation('sandgrassedge_ne', this.webglLoader.resources['sandgrassedge_ne'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrassedge_nw'] = new Animation('sandgrassedge_nw', this.webglLoader.resources['sandgrassedge_nw'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrassedge_se'] = new Animation('sandgrassedge_se', this.webglLoader.resources['sandgrassedge_se'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrassedge_sw'] = new Animation('sandgrassedge_sw', this.webglLoader.resources['sandgrassedge_sw'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandwateredge_ne'] = new Animation('sandwateredge_ne', this.webglLoader.resources['sandwateredge_ne'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwateredge_nw'] = new Animation('sandwateredge_nw', this.webglLoader.resources['sandwateredge_nw'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwateredge_se'] = new Animation('sandwateredge_se', this.webglLoader.resources['sandwateredge_se'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwateredge_sw'] = new Animation('sandwateredge_sw', this.webglLoader.resources['sandwateredge_sw'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwatercorner_n'] = new Animation('sandwatercorner_n', this.webglLoader.resources['sandwatercorner_n'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwatercorner_s'] = new Animation('sandwatercorner_s', this.webglLoader.resources['sandwatercorner_s'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwatercorner_e'] = new Animation('sandwatercorner_e', this.webglLoader.resources['sandwatercorner_e'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwatercorner_w'] = new Animation('sandwatercorner_w', this.webglLoader.resources['sandwatercorner_w'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwaterwedge_e'] = new Animation('sandwaterwedge_e', this.webglLoader.resources['sandwaterwedge_e'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwaterwedge_w'] = new Animation('sandwaterwedge_w', this.webglLoader.resources['sandwaterwedge_w'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandwaterwedge_n'] = new Animation('sandwaterwedge_n', this.webglLoader.resources['sandwaterwedge_n'].texture.castToBaseTexture(), 63, 38, 2, 2000, true);
+        this.animations['sandgrasscorner_w'] = new Animation('sandgrasscorner_w', this.webglLoader.resources['sandgrasscorner_w'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrasscorner_e'] = new Animation('sandgrasscorner_e', this.webglLoader.resources['sandgrasscorner_e'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrasscorner_n'] = new Animation('sandgrasscorner_n', this.webglLoader.resources['sandgrasscorner_n'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['sandgrasscorner_s'] = new Animation('sandgrasscorner_s', this.webglLoader.resources['sandgrasscorner_s'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['snow'] = new Animation('snow', this.webglLoader.resources['snow'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
+        this.animations['bridge1'] = new Animation('bridge1', this.webglLoader.resources['bridge1'].texture.castToBaseTexture(), 63, 38, 1, 0, false);
 
         //objects
-        this.animations['ironfence_nw'] = new Animation('ironfence_nw', this.textures['ironfence_nw'], 63, 68, 1, 0, false);
-        this.animations['ironfence_ne'] = new Animation('ironfence_ne', this.textures['ironfence_ne'], 63, 68, 1, 0, false);
-        this.animations['rock1'] = new Animation('rock1', this.textures['rock1'], 49, 55, 1, 0, false);
-        this.animations['rock2'] = new Animation('rock2', this.textures['rock2'], 48, 41, 1, 0, false);
-        this.animations['fern1'] = new Animation('fern1', this.textures['fern1'], 16, 51, 1, 0, false);
-        this.animations['fern2'] = new Animation('fern2', this.textures['fern2'], 60, 51, 1, 0, false);
-        this.animations['fern3'] = new Animation('fern3', this.textures['fern3'], 36, 51, 1, 0, false);
-        this.animations['streetlamp'] = new Animation('streetlamp', this.textures['streetlamp'], 16, 106, 1, 0, false);
-        this.animations['wave1'] = new Animation('wave1', this.textures['wave1'], 166, 19, 4, 2000, true);
-        this.animations['leaf1'] = new Animation('leaf1', this.textures['leaf1'], 56, 44, 1, 0, false);
-        this.animations['leaf2'] = new Animation('leaf2', this.textures['leaf2'], 43, 31, 1, 0, false);
-        this.animations['torch'] = new Animation('torch', this.textures['torch'], 10, 45, 2, 200, true);
-        this.animations['stick1'] = new Animation('stick1', this.textures['stick1'], 85, 33, 1, 0, false);
-        this.animations['stick2'] = new Animation('stick2', this.textures['stick2'], 68, 55, 1, 0, false);
-        this.animations['rockwall_sw'] = new Animation('rockwall_sw', this.textures['rockwall_sw'], 62, 72, 1, 0, false);
-        this.animations['rockwall_se'] = new Animation('rockwall_se', this.textures['rockwall_se'], 62, 72, 1, 0, false);
-        this.animations['rockwalledge1_sw'] = new Animation('rockwalledge1_sw', this.textures['rockwalledge1_sw'], 62, 72, 1, 0, false);
-        this.animations['rockwalledge2_sw'] = new Animation('rockwalledge2_sw', this.textures['rockwalledge2_sw'], 62, 72, 1, 0, false);
-        this.animations['icestairs'] = new Animation('icestairs', this.textures['icestairs'], 89, 56, 1, 0, false);
-        this.animations['mushroom'] = new Animation('mushroom', this.textures['mushroom'], 52, 52, 1, 0, false);
-        this.animations['leaf3'] = new Animation('leaf3', this.textures['leaf3'], 52, 52, 1, 0, false);
-        this.animations['blacksmithshouse'] = new Animation('blacksmithshouse', this.textures['blacksmithshouse'], 173, 111, 1, 0, false);
-        this.animations['cardboardhouse1'] = new Animation('cardboardhouse1', this.textures['cardboardhouse1'], 131, 126, 1, 0, false);
-        this.animations['cardboardhouse2'] = new Animation('cardboardhouse2', this.textures['cardboardhouse2'], 131, 126, 1, 0, false);
-        this.animations['seashellhouse'] = new Animation('seashellhouse', this.textures['seashellhouse'], 141, 76, 1, 0, false);
-        this.animations['snowman'] = new Animation('snowman', this.textures['snowman'], 41, 55, 1, 0, false);
-        this.animations['chair'] = new Animation('chair', this.textures['chair'], 63, 62, 1, 0, false);
-        this.animations['chair1'] = new Animation('chair1', this.textures['chair1'], 63, 62, 1, 0, false);
-        this.animations['table'] = new Animation('table', this.textures['table'], 53, 43, 1, 0, false);
-        this.animations['cabinwall_nw'] = new Animation('cabinwall_nw', this.textures['cabinwall_nw'], 63, 68, 1, 0, false);
-        this.animations['cabinwall_ne'] = new Animation('cabinwall_ne', this.textures['cabinwall_ne'], 63, 68, 1, 0, false);
-        this.animations['cabinwallcorner'] = new Animation('cabinwallcorner', this.textures['cabinwallcorner'], 63, 68, 1, 0, false);
-        this.animations['boothouse'] = new Animation('boothouse', this.textures['boothouse'], 145, 159, 1, 0, false);
+        this.animations['ironfence_nw'] = new Animation('ironfence_nw', this.webglLoader.resources['ironfence_nw'].texture.castToBaseTexture(), 63, 68, 1, 0, false);
+        this.animations['ironfence_ne'] = new Animation('ironfence_ne', this.webglLoader.resources['ironfence_ne'].texture.castToBaseTexture(), 63, 68, 1, 0, false);
+        this.animations['rock1'] = new Animation('rock1', this.webglLoader.resources['rock1'].texture.castToBaseTexture(), 49, 55, 1, 0, false);
+        this.animations['rock2'] = new Animation('rock2', this.webglLoader.resources['rock2'].texture.castToBaseTexture(), 48, 41, 1, 0, false);
+        this.animations['fern1'] = new Animation('fern1', this.webglLoader.resources['fern1'].texture.castToBaseTexture(), 16, 51, 1, 0, false);
+        this.animations['fern2'] = new Animation('fern2', this.webglLoader.resources['fern2'].texture.castToBaseTexture(), 60, 51, 1, 0, false);
+        this.animations['fern3'] = new Animation('fern3', this.webglLoader.resources['fern3'].texture.castToBaseTexture(), 36, 51, 1, 0, false);
+        this.animations['streetlamp'] = new Animation('streetlamp', this.webglLoader.resources['streetlamp'].texture.castToBaseTexture(), 16, 106, 1, 0, false);
+        this.animations['wave1'] = new Animation('wave1', this.webglLoader.resources['wave1'].texture.castToBaseTexture(), 166, 19, 4, 2000, true);
+        this.animations['leaf1'] = new Animation('leaf1', this.webglLoader.resources['leaf1'].texture.castToBaseTexture(), 56, 44, 1, 0, false);
+        this.animations['leaf2'] = new Animation('leaf2', this.webglLoader.resources['leaf2'].texture.castToBaseTexture(), 43, 31, 1, 0, false);
+        this.animations['torch'] = new Animation('torch', this.webglLoader.resources['torch'].texture.castToBaseTexture(), 10, 45, 2, 200, true);
+        this.animations['stick1'] = new Animation('stick1', this.webglLoader.resources['stick1'].texture.castToBaseTexture(), 85, 33, 1, 0, false);
+        this.animations['stick2'] = new Animation('stick2', this.webglLoader.resources['stick2'].texture.castToBaseTexture(), 68, 55, 1, 0, false);
+        this.animations['rockwall_sw'] = new Animation('rockwall_sw', this.webglLoader.resources['rockwall_sw'].texture.castToBaseTexture(), 62, 72, 1, 0, false);
+        this.animations['rockwall_se'] = new Animation('rockwall_se', this.webglLoader.resources['rockwall_se'].texture.castToBaseTexture(), 62, 72, 1, 0, false);
+        this.animations['rockwalledge1_sw'] = new Animation('rockwalledge1_sw', this.webglLoader.resources['rockwalledge1_sw'].texture.castToBaseTexture(), 62, 72, 1, 0, false);
+        this.animations['rockwalledge2_sw'] = new Animation('rockwalledge2_sw', this.webglLoader.resources['rockwalledge2_sw'].texture.castToBaseTexture(), 62, 72, 1, 0, false);
+        this.animations['icestairs'] = new Animation('icestairs', this.webglLoader.resources['icestairs'].texture.castToBaseTexture(), 89, 56, 1, 0, false);
+        this.animations['mushroom'] = new Animation('mushroom', this.webglLoader.resources['mushroom'].texture.castToBaseTexture(), 52, 52, 1, 0, false);
+        this.animations['leaf3'] = new Animation('leaf3', this.webglLoader.resources['leaf3'].texture.castToBaseTexture(), 52, 52, 1, 0, false);
+        this.animations['blacksmithshouse'] = new Animation('blacksmithshouse', this.webglLoader.resources['blacksmithshouse'].texture.castToBaseTexture(), 173, 111, 1, 0, false);
+        this.animations['cardboardhouse1'] = new Animation('cardboardhouse1', this.webglLoader.resources['cardboardhouse1'].texture.castToBaseTexture(), 131, 126, 1, 0, false);
+        this.animations['cardboardhouse2'] = new Animation('cardboardhouse2', this.webglLoader.resources['cardboardhouse2'].texture.castToBaseTexture(), 131, 126, 1, 0, false);
+        this.animations['seashellhouse'] = new Animation('seashellhouse', this.webglLoader.resources['seashellhouse'].texture.castToBaseTexture(), 141, 76, 1, 0, false);
+        this.animations['snowman'] = new Animation('snowman', this.webglLoader.resources['snowman'].texture.castToBaseTexture(), 41, 55, 1, 0, false);
+        this.animations['chair'] = new Animation('chair', this.webglLoader.resources['chair'].texture.castToBaseTexture(), 63, 62, 1, 0, false);
+        this.animations['chair1'] = new Animation('chair1', this.webglLoader.resources['chair1'].texture.castToBaseTexture(), 63, 62, 1, 0, false);
+        this.animations['table'] = new Animation('table', this.webglLoader.resources['table'].texture.castToBaseTexture(), 53, 43, 1, 0, false);
+        this.animations['cabinwall_nw'] = new Animation('cabinwall_nw', this.webglLoader.resources['cabinwall_nw'].texture.castToBaseTexture(), 63, 68, 1, 0, false);
+        this.animations['cabinwall_ne'] = new Animation('cabinwall_ne', this.webglLoader.resources['cabinwall_ne'].texture.castToBaseTexture(), 63, 68, 1, 0, false);
+        this.animations['cabinwallcorner'] = new Animation('cabinwallcorner', this.webglLoader.resources['cabinwallcorner'].texture.castToBaseTexture(), 63, 68, 1, 0, false);
+        this.animations['boothouse'] = new Animation('boothouse', this.webglLoader.resources['boothouse'].texture.castToBaseTexture(), 145, 159, 1, 0, false);
 
         //actors
-        this.animations['player'] = new Animation('player', this.textures['player'], 35, 45, 4, 400, true);
-        this.animations['playerLeftMove'] = new Animation('playerLeftMove', this.textures['playerLeftMove'], 60, 35, 2, 200, true);
-        this.animations['playerRightMove'] = new Animation('playerRightMove', this.textures['playerRightMove'], 60, 35, 2, 200, true);
-        this.animations['tater'] = new Animation('tater', this.textures['tater'], 28, 26, 1, 0, false);
-        this.animations['taterLeftMove'] = new Animation('taterLeftMove', this.textures['taterLeftMove'], 43, 20, 4, 100, true);
-        this.animations['taterRightMove'] = new Animation('taterRightMove', this.textures['taterRightMove'], 43, 20, 4, 100, true);
-        this.animations['beeLeftMove'] = new Animation('beeLeftMove', this.textures['beeLeftMove'], 32, 56, 2, 100, true);
-        this.animations['beeRightMove'] = new Animation('beeRightMove', this.textures['beeRightMove'], 32, 56, 2, 100, true);
-        this.animations['snailshell'] = new Animation('snailshell', this.textures['item_snailshell'], 31, 27, 1, 0, false);
-        this.animations['emerald'] = new Animation('emerald', this.textures['item_emerald'], 30, 30, 1, 0, false);
-        this.animations['waterbucket'] = new Animation('waterbucket', this.textures['item_waterbucket'], 20, 20, 1, 0, false);
-        this.animations['signpost'] = new Animation('signpost', this.textures['signpost'], 25, 54, 1, 0, false);
-        this.animations['lauren'] = new Animation('lauren', this.textures['lauren'], 41, 50, 4, 400, true);
-        this.animations['amy'] = new Animation('amy', this.textures['amy'], 70, 85, 3, 500, true);
-        this.animations['thomas'] = new Animation('thomas', this.textures['thomas'], 35, 45, 4, 500, true);
-        this.animations['arnold'] = new Animation('arnold', this.textures['arnold'], 43, 62, 3, 500, true);
-        this.animations['bogart'] = new Animation('bogart', this.textures['bogart'], 68, 58, 4, 500, true);
-        this.animations['oscar'] = new Animation('oscar', this.textures['oscar'], 82, 50, 4, 500, true);
-        this.animations['fireplacecold'] = new Animation('fireplacecold', this.textures['fireplacecold'], 63, 86, 1, 0, false);
-        this.animations['fireplacewarm'] = new Animation('fireplacewarm', this.textures['fireplacewarm'], 63, 86, 2, 200, true);
-        this.animations['dockhouse'] = new Animation('dockhouse', this.textures['dockhouse'], 135, 162, 4, 500, true);
-        this.animations['doorway'] = new Animation('doorway', this.textures['doorway'], 63, 59, 1, 0, false);
-        this.animations['glassbottle'] = new Animation('glassbottle', this.textures['glassbottle'], 187, 129, 1, 0, false);
-        this.animations['spring'] = new Animation('spring', this.textures['spring'], 187, 129, 2, 1000, true);
-        this.animations['rudyLeftMove'] = new Animation('rudyLeftMove', this.textures['rudyLeftMove'], 49, 34, 2, 300, true);
-        this.animations['rudyRightMove'] = new Animation('rudyRightMove', this.textures['rudyRightMove'], 49, 34, 2, 300, true);
-        this.animations['blue'] = new Animation('blue', this.textures['blue'], 76, 65, 4, 700, true);
-        this.animations['dusty'] = new Animation('dusty', this.textures['dusty'], 94, 56, 2, 1000, true);
-        this.animations['collins'] = new Animation('collins', this.textures['collins'], 33, 48, 3, 500, true);
+        this.animations['player'] = new Animation('player', this.webglLoader.resources['player'].texture.castToBaseTexture(), 35, 45, 4, 400, true);
+        this.animations['playerLeftMove'] = new Animation('playerLeftMove', this.webglLoader.resources['playerLeftMove'].texture.castToBaseTexture(), 60, 35, 2, 200, true);
+        this.animations['playerRightMove'] = new Animation('playerRightMove', this.webglLoader.resources['playerRightMove'].texture.castToBaseTexture(), 60, 35, 2, 200, true);
+        this.animations['tater'] = new Animation('tater', this.webglLoader.resources['tater'].texture.castToBaseTexture(), 28, 26, 1, 0, false);
+        this.animations['taterLeftMove'] = new Animation('taterLeftMove', this.webglLoader.resources['taterLeftMove'].texture.castToBaseTexture(), 43, 20, 4, 100, true);
+        this.animations['taterRightMove'] = new Animation('taterRightMove', this.webglLoader.resources['taterRightMove'].texture.castToBaseTexture(), 43, 20, 4, 100, true);
+        this.animations['beeLeftMove'] = new Animation('beeLeftMove', this.webglLoader.resources['beeLeftMove'].texture.castToBaseTexture(), 32, 56, 2, 100, true);
+        this.animations['beeRightMove'] = new Animation('beeRightMove', this.webglLoader.resources['beeRightMove'].texture.castToBaseTexture(), 32, 56, 2, 100, true);
+        this.animations['snailshell'] = new Animation('snailshell', this.webglLoader.resources['item_snailshell'].texture.castToBaseTexture(), 31, 27, 1, 0, false);
+        this.animations['emerald'] = new Animation('emerald', this.webglLoader.resources['item_emerald'].texture.castToBaseTexture(), 30, 30, 1, 0, false);
+        this.animations['waterbucket'] = new Animation('waterbucket', this.webglLoader.resources['item_waterbucket'].texture.castToBaseTexture(), 20, 20, 1, 0, false);
+        this.animations['signpost'] = new Animation('signpost', this.webglLoader.resources['signpost'].texture.castToBaseTexture(), 25, 54, 1, 0, false);
+        this.animations['lauren'] = new Animation('lauren', this.webglLoader.resources['lauren'].texture.castToBaseTexture(), 41, 50, 4, 400, true);
+        this.animations['amy'] = new Animation('amy', this.webglLoader.resources['amy'].texture.castToBaseTexture(), 70, 85, 3, 500, true);
+        this.animations['thomas'] = new Animation('thomas', this.webglLoader.resources['thomas'].texture.castToBaseTexture(), 35, 45, 4, 500, true);
+        this.animations['arnold'] = new Animation('arnold', this.webglLoader.resources['arnold'].texture.castToBaseTexture(), 43, 62, 3, 500, true);
+        this.animations['bogart'] = new Animation('bogart', this.webglLoader.resources['bogart'].texture.castToBaseTexture(), 68, 58, 4, 500, true);
+        this.animations['oscar'] = new Animation('oscar', this.webglLoader.resources['oscar'].texture.castToBaseTexture(), 82, 50, 4, 500, true);
+        this.animations['fireplacecold'] = new Animation('fireplacecold', this.webglLoader.resources['fireplacecold'].texture.castToBaseTexture(), 63, 86, 1, 0, false);
+        this.animations['fireplacewarm'] = new Animation('fireplacewarm', this.webglLoader.resources['fireplacewarm'].texture.castToBaseTexture(), 63, 86, 2, 200, true);
+        this.animations['dockhouse'] = new Animation('dockhouse', this.webglLoader.resources['dockhouse'].texture.castToBaseTexture(), 135, 162, 4, 500, true);
+        this.animations['doorway'] = new Animation('doorway', this.webglLoader.resources['doorway'].texture.castToBaseTexture(), 63, 59, 1, 0, false);
+        this.animations['glassbottle'] = new Animation('glassbottle', this.webglLoader.resources['glassbottle'].texture.castToBaseTexture(), 187, 129, 1, 0, false);
+        this.animations['spring'] = new Animation('spring', this.webglLoader.resources['spring'].texture.castToBaseTexture(), 187, 129, 2, 1000, true);
+        this.animations['rudyLeftMove'] = new Animation('rudyLeftMove', this.webglLoader.resources['rudyLeftMove'].texture.castToBaseTexture(), 49, 34, 2, 300, true);
+        this.animations['rudyRightMove'] = new Animation('rudyRightMove', this.webglLoader.resources['rudyRightMove'].texture.castToBaseTexture(), 49, 34, 2, 300, true);
+        this.animations['blue'] = new Animation('blue', this.webglLoader.resources['blue'].texture.castToBaseTexture(), 76, 65, 4, 700, true);
+        this.animations['dusty'] = new Animation('dusty', this.webglLoader.resources['dusty'].texture.castToBaseTexture(), 94, 56, 2, 1000, true);
+        this.animations['collins'] = new Animation('collins', this.webglLoader.resources['collins'].texture.castToBaseTexture(), 33, 48, 3, 500, true);
 
         //cutscenes
-        this.animations['introcutscene'] = new Animation('introcutscene', this.textures['introcutscene'], 560, 350, 6, 800, false);
-        this.animations['springcutscene'] = new Animation('springcutscene', this.textures['springcutscene'], 560, 350, 8, 800, false);
+        this.animations['introcutscene'] = new Animation('introcutscene', this.webglLoader.resources['introcutscene'].texture.castToBaseTexture(), 560, 350, 6, 800, false);
+        this.animations['springcutscene'] = new Animation('springcutscene', this.webglLoader.resources['springcutscene'].texture.castToBaseTexture(), 560, 350, 8, 800, false);
 
         Object.keys(this.animations).forEach(key => { this.animations[key].start(); });
     }

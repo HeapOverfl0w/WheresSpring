@@ -6,6 +6,6 @@ export class LevelObject {
     }
 
     copy() {
-        return new LevelObject(this.name, this.activeAnimation, this.passable);
+        return new LevelObject(this.name, this.activeAnimation.copy(), this.passable);
     }
 }

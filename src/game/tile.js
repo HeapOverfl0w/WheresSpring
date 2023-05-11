@@ -8,7 +8,7 @@ export class Tile {
     }
 
     copy() {
-        const returnValue = new Tile(this.name, this.activeAnimation, this.passable, this.levelObject?.copy());
+        const returnValue = new Tile(this.name, this.activeAnimation.copy(), this.passable, this.levelObject?.copy());
         if (this.lightCoefficient !== undefined) {
             returnValue.lightCoefficient = this.lightCoefficient;
         } else {
