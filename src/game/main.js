@@ -12,16 +12,17 @@ import { Teleport } from './teleport';
 import { Hazard } from './hazard';
 import { ItemRequirement } from './item-requirement';
 import { GLOBAL_AUDIO_HANDLER } from './audio-handler';
-import { WebGLRenderer, Loader } from './webgl-renderer';
+import { WebGLRenderer } from './webgl-renderer';
 
 export class Main {
     constructor(webglApp) {
-        this.data = new Data(webglApp.loader, () => {}, this.onAssetsLoaded.bind(this));
-        this.data.load();
+        this.webglApp = webglApp;
     }
 
-    onAssetsLoaded() {
-        this.webglRenderer = new WebGLRenderer(webglApp)
+    async load(onLoadingProgress) {
+        this.data = new Data(onLoadingProgress);
+        await this.data.load();
+        this.webglRenderer = new WebGLRenderer(this.webglApp, this.data)
         this.camera = new Camera();
         this.camera.x = 88.5;
         this.camera.y = 66.5;
@@ -39,6 +40,7 @@ export class Main {
         this.drawObjects = true;
         
         this.start();
+
     }
 
     createOverworldActors() {
@@ -156,9 +158,11 @@ export class Main {
         for(let x = 0; x < levelObject.tiles.length; x++) {
             for(let y = 0; y < levelObject.tiles[x].length; y++) {
                 levelObject.tiles[x][y].activeAnimation = this.data.animations[levelObject.tiles[x][y].activeAnimation].copy();
+                levelObject.tiles[x][y].activeAnimation.start();
                 if (levelObject.tiles[x][y].levelObject) {
                     levelObject.tiles[x][y].levelObject.activeAnimation = this.data.animations[levelObject.tiles[x][y].levelObject.activeAnimation].copy();
                     Object.setPrototypeOf(levelObject.tiles[x][y].levelObject, LevelObject.prototype);
+                    levelObject.tiles[x][y].levelObject.activeAnimation.start();
                 }
 
                 Object.setPrototypeOf(levelObject.tiles[x][y], Tile.prototype);
@@ -175,7 +179,7 @@ export class Main {
     update() {
         if (this.activeCutscene) {
             this.activeCutscene.update();
-            this.activeCutscene.draw(webglApp.stage);
+            this.activeCutscene.draw(this.webglApp.stage);
 
             return;
         }
@@ -237,7 +241,7 @@ export class Main {
         }
         if (key === 'e') {
             for (let a = 0; a < this.overworldActors.length; a++) {
-                if (this.overworldActors[a].isCloseTo(this.player.x, this.player.y)) {
+                if (this.overworldActors[a].isCloseTo && this.overworldActors[a].isCloseTo(this.player.x, this.player.y)) {
                     GLOBAL_AUDIO_HANDLER.playClick();
                     const dialogText = this.overworldActors[a].interact(this.level, this.player);
 

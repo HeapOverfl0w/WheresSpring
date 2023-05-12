@@ -4,9 +4,9 @@ animation starts at 0,0. */
 import { Texture, AnimatedSprite, Sprite, Rectangle } from "pixi.js";
 
 export class Animation {
-    constructor(name, baseTexture, frameWidth, frameHeight, frameCount, frameTimeMs, repeats) {
+    constructor(name, texture, frameWidth, frameHeight, frameCount, frameTimeMs, repeats) {
         this.name = name;
-        this.baseTexture = baseTexture;
+        this.texture = texture;
         this.textureFrames = [];
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
@@ -18,14 +18,14 @@ export class Animation {
 
         if (frameCount > 1) {
             for (let t = 0; t < frameCount; t++) {
-                this.textureFrames.push(new Texture(baseTexture, new Rectangle(0, t * frameHeight, frameWidth, frameHeight)));
+                this.textureFrames.push(new Texture(texture.castToBaseTexture(), new Rectangle(0, t * frameHeight, frameWidth, frameHeight)));
             }
 
             this.webglSprite = new AnimatedSprite(this.textureFrames);
-            this.webglSprite.animationSpeed = frameTimeMs / 1000;
+            this.webglSprite.animationSpeed = frameTimeMs / 50000;
             this.webglSprite.loop = repeats;
         } else {
-            this.webglSprite = new Sprite(baseTexture);
+            this.webglSprite = new Sprite(texture);
         }       
     }
 
@@ -51,6 +51,6 @@ export class Animation {
     }
 
     copy() {
-        return new Animation(this.name, this.baseTexture, this.frameWidth, this.frameHeight, this.frameCount, this.frameTimeMs, this.repeats);
+        return new Animation(this.name, this.texture, this.frameWidth, this.frameHeight, this.frameCount, this.frameTimeMs, this.repeats);
     }
 }

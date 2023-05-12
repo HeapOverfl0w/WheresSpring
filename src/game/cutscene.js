@@ -61,14 +61,14 @@ export class Cutscene {
         }
     }
 
-    draw(ctx) {
+    draw(webglContext) {
         if (this.currentIndex >= this.animationsAndText.length) {
             return;
         }
 
         if (this.animationsAndText[this.currentIndex].length !== undefined) {
             //always have animation first and then text so text will go on top of frame buffer of last animation
-            let frameBuffer = this.animationsAndText[this.currentIndex - 1].getFrameBuffer();
+            /*let frameBuffer = this.animationsAndText[this.currentIndex - 1].getFrameBuffer();
             let canvasBuffer = ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height);
             for (let i = 0; i < canvasBuffer.data.length; i++)
                 canvasBuffer.data[i] = frameBuffer.data[i];
@@ -79,20 +79,10 @@ export class Cutscene {
                     ctx.fillText(this.animationsAndText[this.currentIndex][i].slice(0,this.stringPlayIndex), 1, i * 10 + 10, ctx.canvas.width-1);
                 else
                     ctx.fillText(this.animationsAndText[this.currentIndex][i], 1, i * 10 + 10, ctx.canvas.width-1);
-            }
+            }*/
         }
         else {
-            let frameBuffer = this.animationsAndText[this.currentIndex].getFrameBuffer();
-            let canvasBuffer = ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height);
-            for (let i = 0; i < canvasBuffer.data.length; i = i + 4){
-                if (frameBuffer.data[i+3] != 0) {
-                    canvasBuffer.data[i] = frameBuffer.data[i];
-                    canvasBuffer.data[i+1] = frameBuffer.data[i+1];
-                    canvasBuffer.data[i+2] = frameBuffer.data[i+2];
-                    canvasBuffer.data[i+3] = 255;
-                }
-            }
-            ctx.putImageData(canvasBuffer, 0,0);
+            webglContext.addChild(this.animationsAndText[this.currentIndex].webglSprite);
         }
     }
 }

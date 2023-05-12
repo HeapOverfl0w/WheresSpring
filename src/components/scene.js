@@ -6,7 +6,7 @@ import { GLOBAL_AUDIO_HANDLER } from "../game/audio-handler";
 import { Application } from 'pixi.js';
 
 export function Scene() {
-    const pixiDivRef = useRef();
+    const canvasRef = useRef();
     const [main, setMain] = useState(undefined);
     const [backpackOpen, setBackpackOpen] = useState(false);
     const [inventory, setInventory] = useState([]);
@@ -14,15 +14,22 @@ export function Scene() {
     const [dialogImage, setDialogImage] = useState('');
 
     let mainCreated = false;
+    let useEffectCalled = false;
 
     useEffect(() => {
-        const webglApp = new Application({width: 500, height: 350, background: '#48657D'});
-        pixiDivRef.current.appendChild(webglApp.view);
-        if (!mainCreated) {
-            let newMain = new Main(webglApp);
-            setMain(newMain);
-            setInventory(newMain.player.inventory);
-            mainCreated = true;
+        if (!useEffectCalled) {
+            const webglApp = new Application({width: 500, height: 350, background: '#48657D', view: canvasRef.current});
+            if (!mainCreated) {
+                let newMain = new Main(webglApp);
+                setMain(newMain);
+
+                newMain.load(() => {}).then(() => {
+                    setInventory(newMain.player.inventory);
+                    mainCreated = true;
+                });
+            }
+
+            useEffectCalled = true;
         }
     }, []);
 
@@ -63,7 +70,26 @@ export function Scene() {
             }}
         >
             <div style={{display: 'flex', flexDirection: 'row'}}>
-                <div id='hardwareScene' ref={pixiDivRef}></div>
+                <canvas style={{minWidth: '100vw', maxHeight: '100vh'}}
+                    id='scene' ref={canvasRef}
+                    width='560' height='350'
+                    onWheel={(event) => {
+                        main?.handleMouseWheel(event.deltaY);
+                    }}
+                    onMouseMove={(event) => {
+                        let rect = canvasRef.current.getBoundingClientRect();
+                        let x = event.clientX - rect.left;
+                        let y = event.clientY - rect.top;
+                        main?.handleMouseMove(
+                            x / canvasRef.current.clientWidth * canvasRef.current.width, 
+                            y / canvasRef.current.clientHeight * canvasRef.current.height);
+                    }}
+                    onMouseUp={() => {
+                        if (!dialogText) {
+                            main?.handleMouseUp();
+                        } 
+                    }}
+                ></canvas> 
                 <Dialog dialogText={dialogText} dialogImage={dialogImage} />
                 <Backpack backpackOpen={backpackOpen} inventory={inventory}/>
             </div>

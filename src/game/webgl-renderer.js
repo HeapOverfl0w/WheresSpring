@@ -1,8 +1,8 @@
 import { TILE_WIDTH, TILE_HEIGHT, TILE_HEIGHT_OFFSET_RATIO, hexToRgbOffset } from './constants';
-import { Sprite } from 'pixi.js';
+import { Sprite, Assets } from 'pixi.js';
 
 export class WebGLRenderer {
-    constructor(webglApp) {
+    constructor(webglApp, data) {
         this.mouseTileX = 0;
         this.mouseTileY = 0;
         this.lastDrawTime = 0;
@@ -10,15 +10,15 @@ export class WebGLRenderer {
         this.canvasWidth = webglApp.view.width;
         this.canvasHeight = webglApp.view.height;
 
-        this.backpackIcon = new Sprite(webglApp.loader.resources['backpackIcon'].texture);
+        this.backpackIcon = new Sprite(data.textures["backpackIcon"]);
         this.backpackIcon.x = this.canvasWidth - this.backpackIcon.width - 5;
         this.backpackIcon.y = this.canvasHeight - this.backpackIcon.height - 5;
 
-        this.eIcon = new Sprite(webglApp.loader.resources['eIcon'].texture);
-        this.eIcon.x = ctx.canvas.width/2 - 20;
-        this.eIcon.y = ctx.canvas.height/2 - 10;
+        this.eIcon = new Sprite(data.textures["eIcon"]);
+        this.eIcon.x = this.canvasWidth/2 - 20;
+        this.eIcon.y = this.canvasHeight/2 - 10;
 
-        this.webglContext = webglApp.stage;        
+        this.webglContext = webglApp.stage;  
     }
 
     componentToHex(c) {
@@ -34,16 +34,16 @@ export class WebGLRenderer {
         for (let a = 0; a < actors.length; a++) {
             const actionString = actors[a].isCloseTo ? actors[a].isCloseTo(player.x, player.y) : undefined;
             if (actionString) {
-                this.webglContext.addChild(eIcon);
+                this.webglContext.addChild(this.eIcon);
                 //ctx.fillStyle = "white";
-                //ctx.fillText(actionString, ctx.canvas.width/2, ctx.canvas.height/2);
+                //ctx.fillText(actionString, this.canvasWidth/2, this.canvasHeight/2);
                 break;
             }
         }
     }
 
     draw(player, level, mouseX, mouseY, aStarPath = [], drawNonPassables = false, drawLightSources = false, drawObjects = true) {
-        //ctx.fillRect(0, ctx.canvas.width, ctx.canvas.height);
+        //ctx.fillRect(0, this.canvasWidth, this.canvasHeight);
         const camera = player.camera;
 
         const startX = Math.floor(camera.x) - camera.zoom;
@@ -55,11 +55,9 @@ export class WebGLRenderer {
 
         let extraCameraSpace = Math.ceil(camera.zoom / 10 * 2.6);
 
-        let tilesToDraw = [];
-
         let ambientRgb = hexToRgbOffset(level.ambientLight);
 
-        this.webglContext.removeChildren();
+        this.objectsToDraw = [];
 
         for(let x = startX + camera.zoom * 2 + 5; x > startX - extraCameraSpace; x--) {
             for (let y = startY - 5; y < startY + camera.zoom * 2 + extraCameraSpace; y++) {
@@ -71,16 +69,16 @@ export class WebGLRenderer {
                     let tileBottomY = tileY + tileHeight;
 
                     //only draw if it's in viewport, check by looking at each tile corner and verifying that at least one of them is in the viewport
-                    if ((tileX > -1 && tileX < ctx.canvas.width && tileY > -1 && tileY < ctx.canvas.height) || 
-                        (tileBottomX > -1 && tileBottomX < ctx.canvas.width && tileBottomY > -1 && tileBottomY < ctx.canvas.height) || 
-                        (tileBottomX > -1 && tileBottomX < ctx.canvas.width && tileY > -1 && tileY < ctx.canvas.height) || 
-                        (tileX > -1 && tileX < ctx.canvas.width && tileBottomY > -1 && tileBottomY < ctx.canvas.height)) {
+                    if ((tileX > -1 && tileX < this.canvasWidth && tileY > -1 && tileY < this.canvasHeight) || 
+                        (tileBottomX > -1 && tileBottomX < this.canvasWidth && tileBottomY > -1 && tileBottomY < this.canvasHeight) || 
+                        (tileBottomX > -1 && tileBottomX < this.canvasWidth && tileY > -1 && tileY < this.canvasHeight) || 
+                        (tileX > -1 && tileX < this.canvasWidth && tileBottomY > -1 && tileBottomY < this.canvasHeight)) {
                         
-                        let isAStarPath = aStarPath.find((item) => item.x === tilesToDraw[t].x && item.y === tilesToDraw[t].y) !== undefined;
+                        let isAStarPath = aStarPath.find((item) => item.x === x && item.y === y) !== undefined;
                         let isMouseInside = this.drawTile(
-                            tilesToDraw[t].tile, 
-                            Math.floor(tilesToDraw[t].tileX), 
-                            Math.floor(tilesToDraw[t].tileY), 
+                            level.tiles[x][y], 
+                            tileX, 
+                            tileY, 
                             tileWidth, tileHeight, 
                             mouseX, mouseY, 
                             isAStarPath, 
@@ -88,12 +86,12 @@ export class WebGLRenderer {
                             drawLightSources,
                             ambientRgb);
                         if (isMouseInside) {
-                            this.mouseTileX = tilesToDraw[t].x;
-                            this.mouseTileY = tilesToDraw[t].y;
+                            this.mouseTileX = x;
+                            this.mouseTileY = y;
                         }
                         
                         if (drawObjects && level.tiles[x][y].levelObject) {
-                            let isMouseInside = this.drawGameObject(ctx, level.tiles[x][y], level.tiles[x][y].levelObject, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, ambientRgb);
+                            let isMouseInside = this.drawGameObject(level.tiles[x][y], level.tiles[x][y].levelObject, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, drawLightSources, ambientRgb);
                             if (isMouseInside) {
                                 this.mouseTileX = x;
                                 this.mouseTileY = y;
@@ -107,19 +105,24 @@ export class WebGLRenderer {
                                 tileX, tileY, 
                                 tileWidth, tileHeight, 
                                 mouseX, mouseY, 
+                                drawLightSources,
                                 ambientRgb, 
                                 true);
                         }
                     } 
                 }
-            }
+            } 
+        }
+
+        for(let o = 0; o < this.objectsToDraw.length; o++) {
+            this.webglContext.addChild(this.objectsToDraw[o]);
         }
         
         this.webglContext.addChild(this.backpackIcon);
     }
 
     drawTile(tile, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, isAStarPath, drawNonPassables, drawLightSources, ambientRgb) {
-        const tileSprite = tile.activeAnimation.sprite;
+        const tileSprite = tile.activeAnimation.webglSprite;
 
         tileSprite.x = tileX;
         tileSprite.y = tileY;
@@ -141,11 +144,11 @@ export class WebGLRenderer {
         return tileX <= mouseX && mouseX >= tileX + tileWidth && tileY <= mouseY && mouseY >= tileY + tileHeight;
     }
 
-    drawGameObject(tile, object, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, ambientRgb, isActor = false) {
-        const objectSprite = object.activeAnimation.sprite;
+    drawGameObject(tile, object, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, drawLightSources, ambientRgb, isActor = false) {
+        const objectSprite = object.activeAnimation.webglSprite;
         //get scaled width/height
-        let zoomWidth = Math.floor(frameBuffer.width * tileWidth / TILE_WIDTH);
-        let zoomHeight = Math.floor(frameBuffer.height * tileHeight / TILE_HEIGHT); 
+        let zoomWidth = Math.floor(objectSprite.texture.width * tileWidth / TILE_WIDTH);
+        let zoomHeight = Math.floor(objectSprite.texture.height * tileHeight / TILE_HEIGHT); 
 
         let startX = 0;
         let startY = 0;
@@ -160,16 +163,16 @@ export class WebGLRenderer {
 
         objectSprite.x = startX;
         objectSprite.y = startY;
-        objectSprite.width = tileWidth;
-        objectSprite.height = tileHeight;
+        objectSprite.width = zoomWidth;
+        objectSprite.height = zoomHeight;
 
         if (drawLightSources) {
-            tileSprite.tint = rgbToHex(Math.floor(tile.lightCoefficient * ambientRgb.r), Math.floor(tile.lightCoefficient * ambientRgb.g), Math.floor(tile.lightCoefficient * ambientRgb.b))
+            objectSprite.tint = rgbToHex(Math.floor(tile.lightCoefficient * ambientRgb.r), Math.floor(tile.lightCoefficient * ambientRgb.g), Math.floor(tile.lightCoefficient * ambientRgb.b))
         } else {
-            tileSprite.tint = "0xFFFFFF"
+            objectSprite.tint = "0xFFFFFF"
         }
 
-        this.webglContext.addChild(tileSprite);
+        this.objectsToDraw.push(objectSprite);
 
         return tileX <= mouseX && mouseX >= tileX + tileWidth && tileY <= mouseY && mouseY >= tileY + tileHeight;
     }
