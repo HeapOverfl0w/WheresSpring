@@ -61,7 +61,7 @@ export class Cutscene {
         }
     }
 
-    draw(webglContext) {
+    draw(webglContext, canvasWidth, canvasHeight) {
         if (this.currentIndex >= this.animationsAndText.length) {
             return;
         }
@@ -82,6 +82,10 @@ export class Cutscene {
             }*/
         }
         else {
+            this.animationsAndText[this.currentIndex].webglSprite.x = 0;
+            this.animationsAndText[this.currentIndex].webglSprite.y = 0;
+            this.animationsAndText[this.currentIndex].webglSprite.width = canvasWidth;
+            this.animationsAndText[this.currentIndex].webglSprite.height = canvasHeight;
             webglContext.addChild(this.animationsAndText[this.currentIndex].webglSprite);
         }
     }

@@ -18,11 +18,13 @@ export class Animation {
 
         if (frameCount > 1) {
             for (let t = 0; t < frameCount; t++) {
-                this.textureFrames.push(new Texture(texture.castToBaseTexture(), new Rectangle(0, t * frameHeight, frameWidth, frameHeight)));
+                this.textureFrames.push({
+                    texture: new Texture(texture.castToBaseTexture(), new Rectangle(0, t * frameHeight, frameWidth, frameHeight)),
+                    time: frameTimeMs
+                });
             }
 
             this.webglSprite = new AnimatedSprite(this.textureFrames);
-            this.webglSprite.animationSpeed = frameTimeMs / 50000;
             this.webglSprite.loop = repeats;
         } else {
             this.webglSprite = new Sprite(texture);

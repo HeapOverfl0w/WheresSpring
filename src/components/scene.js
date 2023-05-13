@@ -82,7 +82,7 @@ export function Scene() {
                         let y = event.clientY - rect.top;
                         main?.handleMouseMove(
                             x / canvasRef.current.clientWidth * canvasRef.current.width, 
-                            y / canvasRef.current.clientHeight * canvasRef.current.height);
+                            y / canvasRef.current.clientHeight* canvasRef.current.height);
                     }}
                     onMouseUp={() => {
                         if (!dialogText) {

@@ -1,5 +1,5 @@
 import { TILE_WIDTH, TILE_HEIGHT, TILE_HEIGHT_OFFSET_RATIO, hexToRgbOffset } from './constants';
-import { Sprite, Assets } from 'pixi.js';
+import { Sprite, Text } from 'pixi.js';
 
 export class WebGLRenderer {
     constructor(webglApp, data) {
@@ -19,6 +19,14 @@ export class WebGLRenderer {
         this.eIcon.y = this.canvasHeight/2 - 10;
 
         this.webglContext = webglApp.stage;  
+
+        this.interactionText = new Text('', {
+            fontFamily: 'MS Gothic',
+            fontSize: 10,
+            fill: '0xFFFFFF'
+        });
+        this.interactionText.x = this.canvasWidth/2;
+        this.interactionText.y = this.canvasHeight/2 - 5;
     }
 
     componentToHex(c) {
@@ -27,7 +35,7 @@ export class WebGLRenderer {
     }
 
     rgbToHex(r, g, b) {
-        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 
     drawPlayerInteraction(player, actors) {
@@ -35,15 +43,14 @@ export class WebGLRenderer {
             const actionString = actors[a].isCloseTo ? actors[a].isCloseTo(player.x, player.y) : undefined;
             if (actionString) {
                 this.webglContext.addChild(this.eIcon);
-                //ctx.fillStyle = "white";
-                //ctx.fillText(actionString, this.canvasWidth/2, this.canvasHeight/2);
+                this.interactionText.text = actionString;
+                this.webglContext.addChild(this.interactionText);
                 break;
             }
         }
     }
 
     draw(player, level, mouseX, mouseY, aStarPath = [], drawNonPassables = false, drawLightSources = false, drawObjects = true) {
-        //ctx.fillRect(0, this.canvasWidth, this.canvasHeight);
         const camera = player.camera;
 
         const startX = Math.floor(camera.x) - camera.zoom;
@@ -130,7 +137,10 @@ export class WebGLRenderer {
         tileSprite.height = tileHeight;
 
         if (drawLightSources) {
-            tileSprite.tint = rgbToHex(Math.floor(tile.lightCoefficient * ambientRgb.r), Math.floor(tile.lightCoefficient * ambientRgb.g), Math.floor(tile.lightCoefficient * ambientRgb.b))
+            tileSprite.tint = this.rgbToHex(
+                Math.floor(ambientRgb.r + (255 - ambientRgb.r) * (1 - tile.lightCoefficient)), 
+                Math.floor(ambientRgb.g + (255 - ambientRgb.g) * (1 - tile.lightCoefficient)), 
+                Math.floor(ambientRgb.b + (255 - ambientRgb.b) * (1 - tile.lightCoefficient)));
         } else if (isAStarPath) {
             tileSprite.tint = "#031CFC"
         } else if (drawNonPassables) {
@@ -141,7 +151,7 @@ export class WebGLRenderer {
 
         this.webglContext.addChild(tileSprite);
 
-        return tileX <= mouseX && mouseX >= tileX + tileWidth && tileY <= mouseY && mouseY >= tileY + tileHeight;
+        return ((tileX <= mouseX) && (mouseX <= (tileX + tileWidth))) && ((tileY <= mouseY) && (mouseY <= (tileY + tileHeight)));
     }
 
     drawGameObject(tile, object, tileX, tileY, tileWidth, tileHeight, mouseX, mouseY, drawLightSources, ambientRgb, isActor = false) {
@@ -167,13 +177,16 @@ export class WebGLRenderer {
         objectSprite.height = zoomHeight;
 
         if (drawLightSources) {
-            objectSprite.tint = rgbToHex(Math.floor(tile.lightCoefficient * ambientRgb.r), Math.floor(tile.lightCoefficient * ambientRgb.g), Math.floor(tile.lightCoefficient * ambientRgb.b))
+            objectSprite.tint = this.rgbToHex(
+                Math.floor(ambientRgb.r + (255 - ambientRgb.r) * (1 - tile.lightCoefficient)), 
+                Math.floor(ambientRgb.g + (255 - ambientRgb.g) * (1 - tile.lightCoefficient)), 
+                Math.floor(ambientRgb.b + (255 - ambientRgb.b) * (1 - tile.lightCoefficient)));
         } else {
             objectSprite.tint = "0xFFFFFF"
         }
 
         this.objectsToDraw.push(objectSprite);
 
-        return tileX <= mouseX && mouseX >= tileX + tileWidth && tileY <= mouseY && mouseY >= tileY + tileHeight;
+        return tileX <= mouseX && mouseX <= tileX + tileWidth && tileY <= mouseY && mouseY <= tileY + tileHeight;
     }
 }

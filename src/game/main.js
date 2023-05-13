@@ -177,9 +177,10 @@ export class Main {
     }
     
     update() {
+        this.webglApp.stage.removeChildren();
         if (this.activeCutscene) {
             this.activeCutscene.update();
-            this.activeCutscene.draw(this.webglApp.stage);
+            this.activeCutscene.draw(this.webglApp.stage, this.webglApp.view.width, this.webglApp.view.height);
 
             return;
         }
@@ -190,7 +191,7 @@ export class Main {
             }
         }
         this.player.update(this.level);
-        this.webglRenderer.draw(this.player, this.level, this.mouseX, this.mouseY, [], false, false, this.drawObjects);
+        this.webglRenderer.draw(this.player, this.level, this.mouseX, this.mouseY, [], false, true, this.drawObjects);
         this.webglRenderer.drawPlayerInteraction(this.player, this.overworldActors);
 
         GLOBAL_AUDIO_HANDLER.update();

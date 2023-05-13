@@ -9,7 +9,7 @@ export function hexToRgbOffset(hex) {
         var r= parseInt(result[1], 16);
         var g= parseInt(result[2], 16);
         var b= parseInt(result[3], 16);
-        return {r : r-255, g : g-255, b : b-255};
+        return {r : r, g : g, b : b};
     } 
     return {r: 0, g: 0, b: 0};
   };
