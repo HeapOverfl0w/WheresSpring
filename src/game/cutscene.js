@@ -63,6 +63,8 @@ export class Cutscene {
 
     draw(webglContext, canvasWidth, canvasHeight) {
         if (this.currentIndex >= this.animationsAndText.length) {
+            
+            webglContext.addChild(this.animationsAndText[this.animationsAndText.length - 1].webglSprite);
             return;
         }
 
