@@ -21,7 +21,7 @@ export class Data {
             let imgName = TexturesList[i].split('.')[0];
             this.textures[imgName] = await Assets.load("rsc/" + TexturesList[i]);
             this.textures[imgName].baseTexture.scaleMode = SCALE_MODES.NEAREST;
-            this.onLoadingProgress(i / TexturesList.length);
+            this.onLoadingProgress(i / (TexturesList.length - 1));
         }
 
         this.loadAnimations();

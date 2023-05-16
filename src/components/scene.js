@@ -4,6 +4,7 @@ import { Dialog } from "./dialog";
 import { Backpack } from "./backpack";
 import { GLOBAL_AUDIO_HANDLER } from "../game/audio-handler";
 import { Application } from 'pixi.js';
+import { Typography } from "@mui/material";
 
 export function Scene() {
     const canvasRef = useRef();
@@ -12,6 +13,7 @@ export function Scene() {
     const [inventory, setInventory] = useState([]);
     const [dialogText, setDialogText] = useState('');
     const [dialogImage, setDialogImage] = useState('');
+    const [loadProgress, setLoadProgress] = useState(0);
 
     let mainCreated = false;
     let useEffectCalled = false;
@@ -23,7 +25,7 @@ export function Scene() {
                 let newMain = new Main(webglApp);
                 setMain(newMain);
 
-                newMain.load(() => {}).then(() => {
+                newMain.load(onLoadProgress).then(() => {
                     setInventory(newMain.player.inventory);
                     mainCreated = true;
                 });
@@ -32,6 +34,10 @@ export function Scene() {
             useEffectCalled = true;
         }
     }, []);
+
+    function onLoadProgress(progress) {
+        setLoadProgress(progress);
+    }
 
     return (
         <div tabIndex="0"
@@ -70,28 +76,33 @@ export function Scene() {
             }}
         >
             <div style={{display: 'flex', flexDirection: 'row'}}>
-                <canvas style={{minWidth: '100vw', maxHeight: '100vh'}}
-                    id='scene' ref={canvasRef}
-                    width='560' height='350'
-                    onWheel={(event) => {
-                        main?.handleMouseWheel(event.deltaY);
-                    }}
-                    onMouseMove={(event) => {
-                        let rect = canvasRef.current.getBoundingClientRect();
-                        let x = event.clientX - rect.left;
-                        let y = event.clientY - rect.top;
-                        main?.handleMouseMove(
-                            x / canvasRef.current.clientWidth * canvasRef.current.width, 
-                            y / canvasRef.current.clientHeight* canvasRef.current.height);
-                    }}
-                    onMouseUp={() => {
-                        if (!dialogText) {
-                            main?.handleMouseUp();
-                        } 
-                    }}
-                ></canvas> 
-                <Dialog dialogText={dialogText} dialogImage={dialogImage} />
-                <Backpack backpackOpen={backpackOpen} inventory={inventory}/>
+                <div hidden={loadProgress !== 1}>
+                    <canvas style={{minWidth: '100vw', maxHeight: '100vh'}}
+                        id='scene' ref={canvasRef}
+                        width='560' height='350'
+                        onWheel={(event) => {
+                            main?.handleMouseWheel(event.deltaY);
+                        }}
+                        onMouseMove={(event) => {
+                            let rect = canvasRef.current.getBoundingClientRect();
+                            let x = event.clientX - rect.left;
+                            let y = event.clientY - rect.top;
+                            main?.handleMouseMove(
+                                x / canvasRef.current.clientWidth * canvasRef.current.width, 
+                                y / canvasRef.current.clientHeight* canvasRef.current.height);
+                        }}
+                        onMouseUp={() => {
+                            if (!dialogText) {
+                                main?.handleMouseUp();
+                            } 
+                        }}
+                    ></canvas> 
+                    <Dialog dialogText={dialogText} dialogImage={dialogImage} />
+                    <Backpack backpackOpen={backpackOpen} inventory={inventory}/>
+                </div>
+                <div hidden={loadProgress === 1} style={{position:'absolute', top: '45%', left: '45%'}}>
+                    <Typography>{`Loading... ${Math.floor(loadProgress * 100)}%`}</Typography>
+                </div>             
             </div>
         </div>
     )
